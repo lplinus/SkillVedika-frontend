@@ -1,0 +1,814 @@
+/* Note:  we are not using this page anymore because we are using the globals-critical.css file */
+
+
+@import 'tw-animate-css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ============================================================================
+   CONSOLIDATED GLOBAL STYLES - Optimized for single CSS chunk
+   All styles consolidated to reduce render-blocking resources
+   ============================================================================ */
+
+/* Tailwind CSS imports */
+/* @import 'tailwindcss'; */
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================================
+   CRITICAL BASE STYLES - Above the fold, must load first
+   ============================================================================ */
+
+/* Prevent horizontal scrolling and ensure responsive behavior */
+html,
+body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Browser Compatibility Fixes - Critical for cross-browser support */
+html {
+  /* Standard property for Chrome 54+, Edge 79+, Firefox */
+  text-size-adjust: 100%;
+  /* Webkit prefix for Safari (Tailwind already adds this, but ensuring it's here) */
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ============================================================================
+   CSS VARIABLES - Color System & Theme
+   ============================================================================ */
+
+:root {
+  /* SkillVedika Color System */
+  --background: #f0f4f9;
+  --foreground: #1a1a1a;
+  --primary: #2c5aa0;
+  --primary-light: #4a90e2;
+  --primary-dark: #1a3f66;
+  --accent: #ff9500;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --border: #e0e8f0;
+  --text-muted: #666666;
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.5 0 0); /* Improved contrast: 4.5:1 ratio on #f0f4f9 background */
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+}
+
+@layer base {
+  html {
+    font-family: var(--font-poppins), system-ui, -apple-system,
+      BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+
+/* ============================================================================
+   BROWSER COMPATIBILITY FIXES - Critical for cross-browser support
+   ============================================================================ */
+
+/* Backdrop Filter - Add webkit prefix for Safari compatibility */
+.backdrop-blur-sm,
+[class*='backdrop-blur-sm'] {
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.backdrop-blur-md,
+[class*='backdrop-blur-md'] {
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.backdrop-blur-lg,
+[class*='backdrop-blur-lg'] {
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+.backdrop-blur-xl,
+[class*='backdrop-blur-xl'] {
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+}
+
+.backdrop-blur,
+[class*='backdrop-blur']:not([class*='backdrop-blur-sm']):not([class*='backdrop-blur-md']):not(
+    [class*='backdrop-blur-lg']
+  ):not([class*='backdrop-blur-xl']) {
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+/* Width Stretch - Add webkit prefix for Edge compatibility */
+.w-stretch,
+[class*='w-stretch'],
+[style*='width: stretch'],
+[style*='width:stretch'] {
+  width: -webkit-fill-available; /* Fallback for Edge */
+  width: stretch; /* Modern browsers */
+}
+
+/* Scrollbar Properties - Add fallbacks for Safari */
+.scrollbar-gutter-stable {
+  scrollbar-gutter: stable;
+}
+
+.scrollbar-width-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-width-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-width-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-width-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+/* Text Wrap - Add fallbacks for older Safari */
+.text-wrap-balance {
+  text-wrap: normal;
+  text-wrap: balance;
+}
+
+.text-wrap-pretty {
+  text-wrap: normal;
+  text-wrap: pretty;
+}
+
+/* Mask Image - Add webkit prefix for Edge compatibility */
+[style*='mask-image'],
+[class*='mask'] {
+  -webkit-mask-image: var(--mask-image, none);
+  mask-image: var(--mask-image, none);
+}
+
+.mask-image-gradient {
+  -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+  mask-image: linear-gradient(to bottom, black, transparent);
+}
+
+/* Field Sizing - Add fallback for Firefox and Safari */
+input[field-sizing='content'],
+.field-sizing-content,
+[class*='field-sizing-content'],
+.field-utilities {
+  width: auto;
+  min-width: fit-content;
+  field-sizing: content;
+}
+
+@supports not (field-sizing: content) {
+  input[field-sizing='content'],
+  .field-sizing-content,
+  [class*='field-sizing-content'],
+  .field-utilities {
+    width: auto;
+    min-width: fit-content;
+  }
+}
+
+/* ============================================================================
+   BASE LAYER STYLES - Tailwind base layer
+   ============================================================================ */
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+
+  /* Black text cursor (caret) in all input fields across the website */
+  input[type='text'],
+  input[type='email'],
+  input[type='tel'],
+  input[type='password'],
+  input[type='number'],
+  input[type='search'],
+  input[type='url'],
+  textarea {
+    caret-color: #000000 !important;
+    outline: none !important;
+  }
+
+  /* Prevent textarea from auto-resizing based on content */
+  textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    resize: none !important;
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+  }
+
+  input[type='text']:focus,
+  input[type='email']:focus,
+  input[type='tel']:focus,
+  input[type='password']:focus,
+  input[type='number']:focus,
+  input[type='search']:focus,
+  input[type='url']:focus,
+  textarea:focus {
+    outline: none !important;
+  }
+
+  /* Remove default browser focus outlines that create ugly lines */
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: none !important;
+  }
+
+  /* Ensure smooth focus transitions without ugly lines */
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 2px solid rgba(0, 102, 204, 0.2) !important;
+    outline-offset: 2px !important;
+    border-radius: 0.5rem !important;
+  }
+
+/* ============================================================================
+   CURSOR STYLES - Professional cursor behavior
+   ============================================================================ */
+
+/* Form Elements Only - Pointer Cursor */
+label[for],
+select:not(:disabled),
+input[type='checkbox']:not(:disabled),
+input[type='radio']:not(:disabled),
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* Buttons, links, and other interactive elements - Default cursor */
+button,
+a,
+[role='button'] {
+  cursor: pointer;
+}
+
+/* Text Input Fields - Text cursor (I-beam) for typing */
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='search'],
+input[type='tel'],
+input[type='url'],
+input[type='number'],
+textarea {
+  cursor: text;
+}
+
+/* Disabled Elements - Not Allowed Cursor */
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled,
+[disabled],
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+
+/* Images - Default Cursor (No Text Selection) */
+img {
+  cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Cursor Utility Classes */
+.cursor-default {
+  cursor: default;
+}
+
+.cursor-auto {
+  cursor: auto;
+}
+
+.cursor-zoom-in {
+  cursor: zoom-in;
+}
+
+.cursor-zoom-out {
+  cursor: zoom-out;
+}
+
+.cursor-grab {
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+
+.cursor-grabbing {
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
+
+[title],
+.cursor-help {
+  cursor: help;
+}
+
+.cursor-wait {
+  cursor: wait;
+}
+
+.cursor-progress {
+  cursor: progress;
+}
+
+.cursor-move {
+  cursor: move;
+}
+
+.cursor-no-drop {
+  cursor: no-drop;
+}
+
+.cursor-crosshair {
+  cursor: crosshair;
+}
+
+.cursor-all-scroll {
+  cursor: all-scroll;
+}
+
+.cursor-resize-ns {
+  cursor: ns-resize;
+}
+
+.cursor-resize-ew {
+  cursor: ew-resize;
+}
+
+.cursor-resize-nwse {
+  cursor: nwse-resize;
+}
+
+.cursor-resize-nesw {
+  cursor: nesw-resize;
+}
+
+.cursor-cell {
+  cursor: cell;
+}
+
+/* Dropdowns - Pointer cursor (form element) */
+select {
+  cursor: pointer;
+}
+
+/* Smooth transitions for interactive elements */
+button,
+a,
+input,
+select,
+textarea,
+label {
+  transition: all 150ms ease-in-out;
+}
+
+/* Disable pointer events on images to prevent text selection cursor */
+img[draggable='false'] {
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Links - Default cursor (not pointer) */
+a[href] {
+  cursor: pointer;
+}
+
+/* Focus visible states */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+label:focus-visible {
+  outline: 2px solid var(--ring, currentColor);
+  outline-offset: 2px;
+}
+
+/* Hover states with smooth cursor feedback */
+label:hover,
+select:hover:not(:disabled),
+input[type='checkbox']:hover:not(:disabled),
+input[type='radio']:hover:not(:disabled) {
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+}
+
+button:hover:not(:disabled):not([disabled]),
+a:hover,
+[role='button']:hover:not([disabled]) {
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+}
+
+input:not([type='checkbox']):not([type='radio']):not([type='button']):not([type='submit']):not(
+    [type='reset']
+  ):not([type='hidden']),
+textarea {
+  cursor: text;
+}
+
+/* SAFE: disable text selection ONLY for static text */
+p,
+h1, h2, h3, h4, h5, h6 {
+  user-select: none;
+}
+
+/* Allow interaction for everything else */
+div,
+section,
+form,
+iframe {
+  user-select: auto;
+}
+
+
+/* ============================================================================
+   ANIMATIONS - GPU-accelerated animations (less critical, loaded after base)
+   ============================================================================ */
+
+/* Performance optimizations for animations */
+* {
+  will-change: auto;
+}
+
+/* Marquee Animation - Uses transform (GPU accelerated) */
+@keyframes marquee {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  animation: marquee 24s linear infinite;
+  will-change: transform;
+}
+
+
+
+/* Shake Animation - Uses transform (GPU accelerated) */
+@keyframes shake {
+  0% {
+    transform: rotate(0deg);
+  }
+  15% {
+    transform: rotate(-12deg);
+  }
+  30% {
+    transform: rotate(10deg);
+  }
+  45% {
+    transform: rotate(-8deg);
+  }
+  60% {
+    transform: rotate(6deg);
+  }
+  75% {
+    transform: rotate(-4deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.shake {
+  display: inline-block;
+  transform-origin: center;
+  animation: shake 0.9s ease-in-out infinite;
+}
+
+/* Float Animation - Uses transform (GPU accelerated) */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Image aspect ratio styles */
+.image-auto-aspect {
+  width: auto;
+  height: auto;
+}
+
+/* Transform utility */
+.transform-translate-x {
+  transform: translateX(-6px);
+}
+
+/* Fade In Animation */
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in,
+[class*='animate-fade-in'] {
+  animation: fadein 0.3s ease-in-out;
+}
+
+@keyframes fadein-safe {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide In Animations - GPU accelerated */
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.4s ease-out 0.6s both;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.4s ease-out 0.4s both;
+}
+
+/* ============================================================================
+   REACT-SELECT STYLES - For multi-select components
+   ============================================================================ */
+
+.react-select__control {
+  border: 1px solid rgb(209, 213, 219) !important;
+  border-radius: 0.5rem !important;
+  min-height: 40px !important;
+  box-shadow: none !important;
+}
+
+.react-select__control:hover {
+  border-color: rgb(209, 213, 219) !important;
+}
+
+.react-select__control--is-focused {
+  border-color: rgb(59, 130, 246) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.react-select__multi-value {
+  background-color: rgb(219, 234, 254) !important;
+  border-radius: 0.375rem !important;
+}
+
+.react-select__multi-value__label {
+  color: rgb(30, 64, 175) !important;
+  font-size: 0.875rem !important;
+}
+
+.react-select__multi-value__remove {
+  color: rgb(30, 64, 175) !important;
+}
+
+.react-select__multi-value__remove:hover {
+  background-color: rgb(191, 219, 254) !important;
+  color: rgb(30, 64, 175) !important;
+}
+
+.react-select__placeholder {
+  color: rgb(156, 163, 175) !important;
+}
+
+.react-select__input-container {
+  color: rgb(17, 24, 39) !important;
+}
+
+.react-select__menu {
+  border-radius: 0.5rem !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.react-select__option {
+  cursor: pointer !important;
+}
+
+.react-select__option--is-focused {
+  background-color: rgb(219, 234, 254) !important;
+}
+
+.react-select__option--is-selected {
+  background-color: rgb(59, 130, 246) !important;
+}
+
+/* ============================================================================
+   HERO HEADING TEXT WRAPPING - Mobile responsive text flow
+   ============================================================================ */
+
+#hero-heading h1,
+#hero-heading h2,
+#hero-heading h3 {
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Ensure text flows naturally on mobile */
+@media (max-width: 640px) {
+  #hero-heading h1,
+  #hero-heading h2,
+  #hero-heading h3 {
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.2 !important;
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+
+
+/* Hide Google reCAPTCHA badge (allowed with disclaimer) */
+/* FORCE hide Google reCAPTCHA badge everywhere */
+.grecaptcha-badge,
+iframe[src*="recaptcha"],
+iframe[src*="google.com/recaptcha"] {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+
+
+/* Note:  we are not using this page anymore because we are using the globals-critical.css file */
