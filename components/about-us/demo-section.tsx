@@ -3,6 +3,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import dynamic from 'next/dynamic';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
 
 const ReCAPTCHAV2 = dynamic(
   () => import('react-google-recaptcha'),
@@ -18,6 +21,7 @@ const PhoneInput = dynamic(
     ),
   }
 );
+
 
 /* Country dropdown styling */
 const phoneStyles = `
@@ -62,6 +66,8 @@ export default function DemoSection({
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const stopSubmitting = () => setIsSubmitting(false);
+
 
   const [phoneReady, setPhoneReady] = useState(false);
 
@@ -110,7 +116,9 @@ export default function DemoSection({
     e.preventDefault();
 
     if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      return alert('Please enter a valid email.');
+      toast.error('Please enter a valid email.');
+       stopSubmitting();
+      return;
     }
 
     const digits = formData.fullPhone.replace(/\D/g, '');
@@ -118,24 +126,38 @@ export default function DemoSection({
     const local = digits.replace(cc, '');
 
     if (local.length < 7 || local.length > 12) {
-      return alert('Enter a valid phone number (7–12 digits).');
+      toast.error('Enter a valid phone number (7–12 digits).');
+       stopSubmitting();
+
+      return;
     }
 
     if (formData.countryCode === '+91' && !/^[6-9][0-9]{9}$/.test(local)) {
-      return alert('Enter a valid Indian number starting with 6–9.');
+       toast.error('Enter a valid Indian number starting with 6–9.');
+       stopSubmitting();
+
+       return;
     }
 
     if (!formData.selectedCourses.length) {
-      return alert('Please select at least one course.');
+      toast.error('Please select at least one course.');
+       stopSubmitting();
+
+      return;
     }
 
     if (!formData.terms) {
-      return alert('Please accept Terms & Conditions.');
+      toast.error('Please accept Terms & Conditions.');
+       stopSubmitting();
+
+      return;
     }
 
     // 🚨 BLOCK submit if v2 shown but not solved
     if (showV2 && !captchaV2Token) {
-      alert('Please complete the captcha');
+      toast.error('Please complete the captcha');
+       stopSubmitting();
+
       return;
     }
 
@@ -195,14 +217,14 @@ export default function DemoSection({
           return;
         }
 
-        alert(json.message || 'Submission failed');
+        toast.error(json.message || 'Submission failed');
         return;
       }
 
       /* ✅ RESET CAPTCHA STATES */
       setShowV2(false);
       setCaptchaV2Token(null);
-      alert(json.message || 'Submitted!');
+      toast.success(json.message || 'Submitted!');
 
       /* ✅ RESET FORM */
       setFormData({
@@ -215,7 +237,7 @@ export default function DemoSection({
       });
     } catch (err) {
       console.error(err);
-      alert('Something went wrong');
+      toast.error('Something went wrong');
     } finally {
       setIsSubmitting(false);
     }
@@ -338,6 +360,9 @@ export default function DemoSection({
                   <PhoneInput
                     country="in"
                     value={formData.fullPhone}
+                    countryCodeEditable={false}
+                    // forceDialCode={true}
+
                     onChange={(value: string, country: any) =>
                       setFormData({
                         ...formData,
@@ -475,14 +500,20 @@ export default function DemoSection({
             )}
 
             {/* SUBMIT */}
-            <button
-              disabled={isSubmitting || (showV2 && !captchaV2Token)}
-              className="w-full bg-[#1e5ba8] text-white py-3 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting
-                ? 'Submitting…'
-                : formDetails?.submit_button_text || 'Submit your details'}
-            </button>
+            <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full h-14 bg-gradient-to-r from-blue-500 to-teal-500 text-white font-semibold flex items-center justify-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Submitting...</span>
+                    </>
+                  ) : (
+                    <span>{formDetails?.submit_button_text || 'Submit Your Details'}</span>
+                  )}
+                </Button>
           </form>
 
           {/* FOOTER */}

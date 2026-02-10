@@ -12,6 +12,10 @@ import RootClientWrapper from '@/components/RootClientWrapper';
 import { StructuredData } from '@/components/StructuredData';
 import { getGlobalSchema } from '@/lib/schema/globalSchema';
 import ClientSideEffects from './ClientSideEffects';
+  // import { Toaster } from 'sonner';//newly added
+  import { Toaster } from '@/components/ui/sonner';
+
+
 
 /* ---------------- Fonts ---------------- */
 const poppins = Poppins({
@@ -93,7 +97,28 @@ export default function RootLayout({
 
         {/* client-only */}
         <ClientSideEffects />
+      {/* <Toaster /> */}
+<Toaster
+  position="bottom-right"
+  toastOptions={{
+    classNames: {
+      toast:
+        'text-base px-6 py-4 min-h-[64px] rounded-xl',
+      error:
+        'bg-white text-red-600 border border-red-200',
+      success:
+        'bg-white text-green-600 border border-green-200',
+      warning:
+        'bg-white text-yellow-600 border border-yellow-200',
+    },
+  }}
+/>
+
+
+
       </body>
     </html>
   );
+
+
 }

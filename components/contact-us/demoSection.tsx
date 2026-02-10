@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import dynamic from 'next/dynamic';
 import { Checkbox } from '@/components/ui/checkbox';
+import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 
 /* ✅ framer-motion loaded ONLY on client, after hydration */
 const MotionDiv = dynamic(
@@ -120,40 +122,40 @@ export default function DemoSection({
   --------------------------------------*/
   async function handleSubmit(e: any) {
     e.preventDefault();
-  
+
     if (isSubmitting) return;
     setIsSubmitting(true);
-  
+
     try {
       // ---------------- EMAIL VALIDATION ----------------
       if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-        alert('Please enter a valid email');
+        toast.error('Please enter a valid email');
         return;
       }
-  
+
       // ---------------- PHONE VALIDATION ----------------
       const digits = formData.fullPhone.replace(/\D/g, '');
       const cc = formData.countryCode.replace('+', '');
       const local = digits.replace(cc, '');
-  
+
       if (local.length < 7 || local.length > 12) {
-        alert('Enter a valid phone number (7–12 digits)');
+        toast.error('Enter a valid phone number (7–12 digits)');
         return;
       }
-  
+
       if (formData.countryCode === '+91' && !/^[6-9][0-9]{9}$/.test(local)) {
-        alert('Enter a valid Indian mobile number starting with 6–9');
+        toast.error('Enter a valid Indian mobile number starting with 6–9');
         return;
       }
-  
+
       if (!formData.selectedCourses.length) {
-        alert('Please select at least one course');
+        toast.error('Please select at least one course');
         return;
       }
-  
+
       // ---------------- CAPTCHA (v3) ----------------
       let captchaV3Token: string | null = null;
-  
+
       try {
         const { load } = await import('recaptcha-v3');
         const recaptcha = await load(
@@ -163,10 +165,10 @@ export default function DemoSection({
       } catch (err) {
         console.warn('reCAPTCHA v3 failed or blocked', err);
       }
-  
+
       // ---------------- API SUBMIT ----------------
       const api = process.env.NEXT_PUBLIC_API_URL;
-  
+
       const payload: any = {
         name: formData.name,
         email: formData.email,
@@ -174,40 +176,49 @@ export default function DemoSection({
         courses: formData.selectedCourses,
         page: 'Contact Us',
       };
-  
+
       if (captchaV3Token) payload.captcha_v3 = captchaV3Token;
-  
+
       const res = await fetch(`${api}/enroll`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-  
+
       const json = await res.json();
-  
+
       if (!res.ok) {
-        alert(json.message || 'Submission failed');
+        toast.error(json.message || 'Submission failed');
         return;
       }
-  
-      alert(json.message || 'Submitted!');
-  
+
+      toast.success(json.message || 'Submitted!');
+
+      // setFormData({
+      //   name: '',
+      //   email: '',
+      //   fullPhone: '',
+      //   countryCode: '+91',
+      //   selectedCourses: [],
+      //   terms: true,
+      // });
       setFormData({
         name: '',
         email: '',
-        fullPhone: '',
+        fullPhone: undefined as unknown as string,
         countryCode: '+91',
         selectedCourses: [],
         terms: true,
       });
+
     } catch (err) {
       console.error(err);
-      alert('Error submitting form');
+      toast.error('Error submitting form');
     } finally {
       setIsSubmitting(false); // ✅ ALWAYS runs
     }
   }
-  
+
 
   /* -------------------------------------
      UI RENDER
@@ -310,7 +321,7 @@ export default function DemoSection({
                 <h3 className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-teal-400 bg-clip-text text-transparent">
                   {formDetails?.form_title || 'Book Your Free Demo'}
                 </h3>
-{/*  before <p> */} <div className="text-gray-600 mt-2 flex items-center justify-center gap-2">
+                {/*  before <p> */} <div className="text-gray-600 mt-2 flex items-center justify-center gap-2">
                   {formDetails?.form_subtitle || 'Our team will contact you shortly.'}
                   <MotionDiv
                     animate={{ rotate: [-20, 20, -20, 20, 0] }}
@@ -318,8 +329,8 @@ export default function DemoSection({
                   >
                     <Bell className="w-6 h-6 text-yellow-500" />
                   </MotionDiv>
-               </div>    {/*  before </p> */}
-              </div>  
+                </div>    {/*  before </p> */}
+              </div>
 
               {/* FORM */}
               <form className="space-y-6" onSubmit={handleSubmit}>
@@ -358,10 +369,13 @@ export default function DemoSection({
                       <PhoneInput
                         country="in"
                         value={formData.fullPhone}
+                        countryCodeEditable={false}
+                        // forceDialCode={true}
                         onChange={(value: any, country: any) =>
                           setFormData({
                             ...formData,
-                            fullPhone: '+' + value,
+                            // fullPhone: '+' + value,
+                             fullPhone: value,
                             countryCode: '+' + ((country as any)?.dialCode || ''),
                           })
                         }
@@ -422,12 +436,19 @@ export default function DemoSection({
                   </Label>
                 </div>
 
-                <Button
+                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-14 bg-gradient-to-r from-blue-500 to-teal-400 text-white font-semibold rounded-xl"
+                  className="w-full h-14 bg-gradient-to-r from-blue-500 to-teal-500 text-white font-semibold flex items-center justify-center gap-2"
                 >
-                  {isSubmitting ? 'Submitting...' : formDetails?.submit_button_text || 'Submit Your Details'}
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Submitting...</span>
+                    </>
+                  ) : (
+                    <span>{formDetails?.submit_button_text || 'Submit Your Details'}</span>
+                  )}
                 </Button>
 
                 <p className="text-xs text-center text-gray-500">

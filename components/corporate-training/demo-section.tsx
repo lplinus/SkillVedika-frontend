@@ -3,6 +3,9 @@
 import { useState, useRef, useEffect, startTransition } from 'react';
 import dynamic from 'next/dynamic';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 // Lazy load heavy components to reduce initial bundle size
 const PhoneInput = dynamic(() => import('react-phone-input-2').then(mod => mod.default), {
@@ -100,7 +103,7 @@ export default function DemoSection({
 
     // Email validation
     if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      alert('Please enter a valid email.');
+      toast.error('Please enter a valid email.');
       return;
     }
 
@@ -110,32 +113,32 @@ export default function DemoSection({
     const local = digits.replace(cc, '');
 
     if (local.length < 7 || local.length > 12) {
-      alert('Enter a valid phone number (7–12 digits).');
+        toast.error('Enter a valid phone number (7–12 digits).');
       return;
     }
 
     // India strict rule
     if (formData.countryCode === '+91') {
       if (!/^[6-9][0-9]{9}$/.test(local)) {
-        alert('Enter a valid Indian number starting with 6,7,8,9');
+        toast.error('Enter a valid Indian number starting with 6,7,8,9');
         return;
       }
     }
 
     if (formData.selectedCourses.length === 0) {
-      alert('Please select at least one course.');
+      toast.error('Please select at least one course.');
       return;
     }
 
     if (!formData.terms) {
-      alert('Please accept Terms & Conditions.');
+      toast.error('Please accept Terms & Conditions.');
       return;
     }
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       if (!apiUrl) {
-        alert('Missing NEXT_PUBLIC_API_URL');
+        toast.error('Missing NEXT_PUBLIC_API_URL');
         return;
       }
 
@@ -174,12 +177,12 @@ export default function DemoSection({
           statusText: res.statusText,
           url: `${apiUrl}/enroll`,
         });
-        alert(errorMessage);
+        toast.error(errorMessage);
         return;
       }
 
       const json = await res.json();
-      alert(json.message || 'Submitted successfully!');
+      toast.success(json.message || 'Submitted successfully!');
 
       // Reset
       setFormData({
@@ -191,7 +194,7 @@ export default function DemoSection({
         terms: false,
       });
     } catch (err) {
-      alert('Something went wrong');
+      toast.error('Something went wrong');
       console.error(err);
     } finally {
       setIsSubmitting(false); // ✅ ALWAYS reset
@@ -317,6 +320,7 @@ export default function DemoSection({
                   <PhoneInput
                     country="in"
                     value={formData.fullPhone}
+                    countryCodeEditable={false}
                     onChange={(value: any, country: any) =>
                       setFormData({
                         ...formData,
@@ -466,13 +470,20 @@ export default function DemoSection({
             </div>
 
             {/* SUBMIT BUTTON */}
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-[#1e5ba8] text-white py-3 rounded-xl font-semibold hover:opacity-90 active:opacity-80 transition-opacity min-h-[44px] flex items-center justify-center text-sm sm:text-base disabled:opacity-60"
-            >
-              {isSubmitting ? 'Submitting...' : formDetails?.submit_button_text || 'Submit Your Details'}
-            </button>
+             <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full h-14 bg-gradient-to-r from-blue-500 to-teal-500 text-white font-semibold flex items-center justify-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Submitting...</span>
+                    </>
+                  ) : (
+                    <span>{formDetails?.submit_button_text || 'Submit Your Details'}</span>
+                  )}
+                </Button>
           </form>
 
           {/* FOOTER */}

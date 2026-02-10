@@ -9,6 +9,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import LazyPhoneInput from '@/lib/lazyPhoneInput';
 import dynamic from 'next/dynamic';
 import { getTitleParts } from '@/utils/getTitle';
+import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
+
 
 const MotionDiv = dynamic(
   () => import('framer-motion').then(m => m.motion.div),
@@ -84,6 +87,10 @@ export default function DemoSection({
   });
 
   const [searchTerm, setSearchTerm] = useState('');
+  const stopSubmit = () => {
+    setIsSubmitting(false);
+  };
+
 
   /* -------------------- DROPDOWN -------------------- */
   const [open, setOpen] = useState(false);
@@ -105,11 +112,12 @@ export default function DemoSection({
   async function handleSubmit(e: any) {
     e.preventDefault();
 
-    if (isSubmitting) return;   
-    setIsSubmitting(true);  
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
     if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      alert('Please enter a valid email.');
+      toast.error('Please enter a valid email.');
+      stopSubmit();
       return;
     }
 
@@ -120,22 +128,26 @@ export default function DemoSection({
 
 
     if (local.length < 7 || local.length > 12) {
-      alert('Enter valid phone number.');
+      toast.error('Enter valid phone number.');
+      stopSubmit();
       return;
     }
 
     if (formData.countryCode === '+91' && !/^[6-9][0-9]{9}$/.test(local)) {
-      alert('Enter valid Indian number.');
+      toast.error('Enter valid Indian number.');
+      stopSubmit();
       return;
     }
 
     if (formData.selectedCourses.length === 0) {
-      alert('Select at least one course.');
+      toast.error('Select at least one course.');
+      stopSubmit();
       return;
     }
 
     if (!formData.terms) {
-      alert('Please accept Terms & Conditions.');
+      toast.error('Please accept Terms & Conditions.');
+      stopSubmit();
       return;
     }
 
@@ -162,10 +174,11 @@ export default function DemoSection({
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
       if (!apiUrl) {
-        alert('API configuration error. Please try again later.');
+        toast.error('API configuration error. Please try again later.');
+        stopSubmit();
         return;
       }
-      
+
 
       const payload: any = {
         name: formData.name,
@@ -188,11 +201,11 @@ export default function DemoSection({
       const json = await res.json();
 
       if (!res.ok) {
-        alert(json.message || 'Form submission failed');
+        toast.error(json.message || 'Form submission failed');
         return;
       }
 
-      alert('Demo booked successfully!');
+      toast.success('Demo booked successfully!');
 
       setFormData({
         name: '',
@@ -204,7 +217,7 @@ export default function DemoSection({
       });
     } catch (err) {
       console.error(err);
-      alert('Error submitting form');
+      toast.error('Error submitting form');
     } finally {
       setIsSubmitting(false);
     }
@@ -334,6 +347,10 @@ export default function DemoSection({
                     <LazyPhoneInput
                       country="in"
                       value={formData.fullPhone}
+                      // FIXED: Prevents user from deleting or changing the dial code via the input field
+                      countryCodeEditable={false}
+                      // FIXED: Ensures the dial code (+91 for "in") is always forced in the input
+                      forceDialCode={true}
                       onChange={(value: any, country: any) =>
                         setFormData({
                           ...formData,
@@ -361,8 +378,9 @@ export default function DemoSection({
                       }}
                     />
 
+                    {/* Placeholder logic remains same */}
                     {!formData.fullPhone && (
-                      <span className="absolute left-[72px] inset-y-0 flex items-center text-gray-400 pointer-events-none text-sm">
+                      <span className="absolute left-[85px] inset-y-0 flex items-center text-gray-400 pointer-events-none text-sm">
                         {formDetails?.phone_placeholder || 'Enter phone number'}
                       </span>
                     )}
@@ -479,20 +497,33 @@ export default function DemoSection({
                 </div>
 
                 {/* SUBMIT */}
-                <Button
+                {/* {/* <Button
                   type="submit"
                   disabled={isSubmitting}
                   className="w-full h-14 bg-gradient-to-r from-blue-500 to-teal-500 text-white font-semibold"
                 >
                   {formDetails?.submit_button_text || 'Submit Your Details'}
+                </Button> */}
+                  <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full h-14 bg-gradient-to-r from-blue-500 to-teal-500 text-white font-semibold flex items-center justify-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Submitting...</span>
+                    </>
+                  ) : (
+                    <span>{formDetails?.submit_button_text || 'Submit Your Details'}</span>
+                  )}
                 </Button>
-              </form>
-
-              {/* FOOTER */}
-              <p className="text-center text-gray-500 text-sm mt-4 flex items-center justify-center gap-1">
-                <span className="text-orange-500">🔒</span>
-                {formDetails?.form_footer_text || 'Your information is secure.'}
-              </p>
+             </form> 
+                {/* FOOTER */}
+                <p className="text-center text-gray-500 text-sm mt-4 flex items-center justify-center gap-1">
+                  <span className="text-orange-500">🔒</span>
+                  {formDetails?.form_footer_text || 'Your information is secure.'}
+                </p>
             </div>
           </div>
         </MotionDiv>
@@ -500,3 +531,6 @@ export default function DemoSection({
     </section>
   );
 }
+
+
+
