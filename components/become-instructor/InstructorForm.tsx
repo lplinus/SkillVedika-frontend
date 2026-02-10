@@ -59,6 +59,8 @@ interface InstructorFormProps {
 export default function InstructorForm({ formTitle = "Apply to Become an Instructor" }: InstructorFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isExperienceOpen, setIsExperienceOpen] = useState(false);//newly added
+
   const [errors, setErrors] = useState<FormErrors>({});
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -145,7 +147,7 @@ export default function InstructorForm({ formTitle = "Apply to Become an Instruc
       await response.json(); // ensure response stream is consumed
       setIsSuccess(true);
 
-      
+
       // Reset form
       setFormData({
         firstName: '',
@@ -183,7 +185,7 @@ export default function InstructorForm({ formTitle = "Apply to Become an Instruc
   /* ---------------- Form UI ---------------- */
   return (
     <section id="instructor-form" className="py-16 px-4 bg-white">
-        <div className="max-w-3xl mx-auto">
+      <div className="max-w-3xl mx-auto">
         <h2 className="text-4xl font-bold text-center mb-2">
           {formTitle}
         </h2>
@@ -246,16 +248,23 @@ export default function InstructorForm({ formTitle = "Apply to Become an Instruc
           {/* Experience & Skills - Responsive Grid Layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Experience */}
-            <div className="space-y-2">
+            {/* <div className="space-y-2"> */}
+            <div className="space-y-2 relative z-20">
+
               <Label>Years of Experience *</Label>
               <ShadSelect
                 value={formData.yearsOfExperience}
                 onValueChange={value => handleChange('yearsOfExperience', value)}
+                onOpenChange={setIsExperienceOpen}
               >
                 <SelectTrigger className="mt-1">
                   <SelectValue placeholder="Select experience" />
                 </SelectTrigger>
-                <SelectContent>
+                {/* <SelectContent> */}
+                <SelectContent
+                  side="bottom"
+                  align="start"
+                  sideOffset={8}>
                   <SelectItem value="0-1">0–1 years</SelectItem>
                   <SelectItem value="2-3">2–3 years</SelectItem>
                   <SelectItem value="4-5">4–5 years</SelectItem>
@@ -268,6 +277,7 @@ export default function InstructorForm({ formTitle = "Apply to Become an Instruc
                   {errors.yearsOfExperience}
                 </p>
               )}
+              {isExperienceOpen && <div className="h-32" />}
             </div>
 
             {/* Skills */}
@@ -314,8 +324,8 @@ export default function InstructorForm({ formTitle = "Apply to Become an Instruc
               onChange={e => handleChange('message', e.target.value)}
               placeholder="Tell us briefly about your expertise or availability..."
               className="resize-none rounded-lg border border-gray-300 bg-white focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[120px] w-full box-border overflow-y-auto overflow-wrap-break-word break-words"
-              style={{ 
-                wordWrap: 'break-word', 
+              style={{
+                wordWrap: 'break-word',
                 overflowWrap: 'break-word',
                 width: '100%',
                 boxSizing: 'border-box'
