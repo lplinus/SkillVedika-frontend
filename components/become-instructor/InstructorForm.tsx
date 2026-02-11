@@ -110,64 +110,164 @@ export default function InstructorForm({ formTitle = "Apply to Become an Instruc
     }
   };
 
-  const handleSubmit = async () => {
-    if (!validateForm()) return;
 
-    setIsSubmitting(true);
-    setErrors({});
+
+  // ========handler=======================
+  // const handleSubmit = async () => {
+  //   if (!validateForm()) return;
+
+  //   setIsSubmitting(true);
+  //   setErrors({});
+
+  //   try {
+  //     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  //     if (!apiUrl) {
+  //       throw new Error('API URL not configured');
+  //     }
+
+  //     const response = await fetch(`${apiUrl}/instructor-applications`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         firstName: formData.firstName,
+  //         lastName: formData.lastName,
+  //         email: formData.email,
+  //         phone: formData.phone,
+  //         yearsOfExperience: formData.yearsOfExperience,
+  //         skills: formData.skills,
+  //         message: formData.message || '',
+  //       }),
+  //     });
+
+  //     if (!response.ok) {
+  //       const errorData = await response.json().catch(() => ({}));
+  //       const errorMessage = errorData?.message || errorData?.errors || 'Failed to submit application';
+  //       throw new Error(typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage));
+  //     }
+
+  //     await response.json(); // ensure response stream is consumed
+  //     setIsSuccess(true);
+
+
+  //     // Reset form
+  //     setFormData({
+  //       firstName: '',
+  //       lastName: '',
+  //       email: '',
+  //       phone: '',
+  //       yearsOfExperience: '',
+  //       skills: [],
+  //       message: '',
+  //       termsAccepted: false,
+  //     });
+  //   } catch (error) {
+  //     console.error('Application submission error:', error);
+  //     setErrors({
+  //       submit: error instanceof Error ? error.message : 'Failed to submit application. Please try again.',
+  //     });
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+  const handleSubmit = async () => {
+  if (!validateForm()) return;
+
+  if (isSubmitting) return;
+
+  setIsSubmitting(true);
+  setErrors({});
+
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (!apiUrl) {
+      throw new Error('API URL not configured');
+    }
+
+    // ---------------- RECAPTCHA V3 ----------------
+    let captchaV3Token: string | null = null;
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      if (!apiUrl) {
-        throw new Error('API URL not configured');
-      }
+      const { load } = await import('recaptcha-v3');
+      const recaptcha = await load(
+        process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY!
+      );
 
-      const response = await fetch(`${apiUrl}/instructor-applications`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          yearsOfExperience: formData.yearsOfExperience,
-          skills: formData.skills,
-          message: formData.message || '',
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        const errorMessage = errorData?.message || errorData?.errors || 'Failed to submit application';
-        throw new Error(typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage));
-      }
-
-      await response.json(); // ensure response stream is consumed
-      setIsSuccess(true);
-
-
-      // Reset form
-      setFormData({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        yearsOfExperience: '',
-        skills: [],
-        message: '',
-        termsAccepted: false,
-      });
-    } catch (error) {
-      console.error('Application submission error:', error);
-      setErrors({
-        submit: error instanceof Error ? error.message : 'Failed to submit application. Please try again.',
-      });
-    } finally {
-      setIsSubmitting(false);
+      captchaV3Token = await recaptcha.execute(
+        'instructor_application_submit'
+      );
+    } catch (err) {
+      console.warn('reCAPTCHA blocked or failed', err);
     }
-  };
+
+    // ---------------- BUILD PAYLOAD ----------------
+    const payload: any = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      yearsOfExperience: formData.yearsOfExperience,
+      skills: formData.skills,
+      message: formData.message || '',
+    };
+
+    if (captchaV3Token) {
+      payload.captcha_v3 = captchaV3Token;
+    }
+
+    // ---------------- API CALL ----------------
+    const response = await fetch(`${apiUrl}/instructor-applications`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const json = await response.json();
+
+    if (!response.ok) {
+      const errorMessage =
+        json?.message ||
+        json?.errors ||
+        'Failed to submit application';
+
+      throw new Error(
+        typeof errorMessage === 'string'
+          ? errorMessage
+          : JSON.stringify(errorMessage)
+      );
+    }
+
+    setIsSuccess(true);
+
+    // Reset form
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      yearsOfExperience: '',
+      skills: [],
+      message: '',
+      termsAccepted: false,
+    });
+
+  } catch (error) {
+    console.error('Application submission error:', error);
+
+    setErrors({
+      submit:
+        error instanceof Error
+          ? error.message
+          : 'Failed to submit application. Please try again.',
+    });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   /* ---------------- Success Screen ---------------- */
   if (isSuccess) {

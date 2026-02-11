@@ -3,6 +3,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { Label } from '@/components/ui/label';
 import LazyPhoneInput from '@/lib/lazyPhoneInput';
+// import { Button } from 'react-day-picker';
+import { Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+
 
 // 🔥 FIX country names / dial codes to BLACK and font loading
 const phoneStyles = `
@@ -51,6 +56,8 @@ export default function Hero({
   }
 
   const [formDetails, setFormDetails] = useState<any>(initialFormDetails || null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const [formData, setFormData] = useState({
     name: '',
@@ -125,66 +132,193 @@ export default function Hero({
   // ----------------------------------------------------------
   // ⭐ FORM SUBMIT HANDLER
   // ----------------------------------------------------------
+  // async function handleSubmit(e: any) {
+  //   e.preventDefault();
+  //    if (isSubmitting) return;
+
+  //   // Email validation
+  //   if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+  //     toast.error('Please enter a valid email address.');
+  //     return;
+  //   }
+
+  //   // PHONE VALIDATION
+  //   const digitsOnly = formData.fullPhone.replace(/\D/g, '');
+  //   const cc = formData.countryCode.replace('+', '');
+  //   const local = digitsOnly.replace(cc, '');
+
+  //   if (local.length < 7 || local.length > 12) {
+  //     toast.error('Enter a valid phone number (7–12 digits).');
+  //     return;
+  //   }
+
+  //   if (formData.countryCode === '+91' && !/^[6-9][0-9]{9}$/.test(local)) {
+  //     toast.error('Enter a valid 10-digit Indian number starting with 6–9.');
+  //     return;
+  //   }
+  //   setIsSubmitting(true);
+
+  //   // ================v3 captcha===============================================
+  //    try {
+  //     // ---------------- CAPTCHA V3 ----------------
+  //     let captchaV3Token: string | null = null;
+
+  //     try {
+  //       const { load } = await import('recaptcha-v3');
+  //       const recaptcha = await load(
+  //         process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY!
+  //       );
+
+  //       captchaV3Token = await recaptcha.execute('hero_enroll_submit');
+  //     } catch (err) {
+  //       console.warn('reCAPTCHA blocked or failed', err);
+  //     }
+
+  //     // ---------------- API CALL ----------------
+  //     const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+
+  //     const payload: any = {
+  //       name: formData.name,
+  //       email: formData.email,
+  //       phone: formData.fullPhone,
+  //       courses: formData.selectedCourses,
+  //       page: course.title,
+  //     };
+
+  //     if (captchaV3Token) {
+  //       payload.captcha_v3 = captchaV3Token;
+  //     }
+
+  //   try {
+  //     const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+
+  //     const res = await fetch(`${apiUrl}/enroll`, {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({
+  //         name: formData.name,
+  //         email: formData.email,
+  //         phone: formData.fullPhone,
+  //         courses: formData.selectedCourses,
+  //         page: course.title,
+  //       }),
+  //     });
+
+  //     if (!res.ok) {
+  //       toast.error('Submission failed.');
+  //       return;
+  //     }
+
+  //     toast.success('Your details have been submitted!');
+
+  //     // Reset form
+  //     setFormData({
+  //       name: '',
+  //       selectedCourses: [course?.id],
+  //       email: '',
+  //       fullPhone: '',
+  //       countryCode: '+91',
+  //       terms: false,
+  //     });
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error('Something went wrong.');
+  //   }finally{
+  //     setIsSubmitting(false);
+  //   }
+  // }
+
   async function handleSubmit(e: any) {
-    e.preventDefault();
+  e.preventDefault();
+  if (isSubmitting) return;
 
-    // Email validation
-    if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      alert('Please enter a valid email address.');
-      return;
-    }
+  // ---------------- EMAIL VALIDATION ----------------
+  if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+    toast.error('Please enter a valid email address.');
+    return;
+  }
 
-    // PHONE VALIDATION
-    const digitsOnly = formData.fullPhone.replace(/\D/g, '');
-    const cc = formData.countryCode.replace('+', '');
-    const local = digitsOnly.replace(cc, '');
+  // ---------------- PHONE VALIDATION ----------------
+  const digitsOnly = formData.fullPhone.replace(/\D/g, '');
+  const cc = formData.countryCode.replace('+', '');
+  const local = digitsOnly.replace(cc, '');
 
-    if (local.length < 7 || local.length > 12) {
-      alert('Enter a valid phone number (7–12 digits).');
-      return;
-    }
+  if (local.length < 7 || local.length > 12) {
+    toast.error('Enter a valid phone number (7–12 digits).');
+    return;
+  }
 
-    if (formData.countryCode === '+91' && !/^[6-9][0-9]{9}$/.test(local)) {
-      alert('Enter a valid 10-digit Indian number starting with 6–9.');
-      return;
-    }
+  if (formData.countryCode === '+91' && !/^[6-9][0-9]{9}$/.test(local)) {
+    toast.error('Enter a valid 10-digit Indian number starting with 6–9.');
+    return;
+  }
+
+  setIsSubmitting(true);
+
+  try {
+    // ---------------- RECAPTCHA V3 ----------------
+    let captchaV3Token: string | null = null;
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+      const { load } = await import('recaptcha-v3');
+      const recaptcha = await load(
+        process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY!
+      );
 
-      const res = await fetch(`${apiUrl}/enroll`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.fullPhone,
-          courses: formData.selectedCourses,
-          page: course.title,
-        }),
-      });
-
-      if (!res.ok) {
-        alert('Submission failed.');
-        return;
-      }
-
-      alert('Your details have been submitted!');
-
-      // Reset form
-      setFormData({
-        name: '',
-        selectedCourses: [course?.id],
-        email: '',
-        fullPhone: '',
-        countryCode: '+91',
-        terms: false,
-      });
-    } catch (error) {
-      console.error(error);
-      alert('Something went wrong.');
+      captchaV3Token = await recaptcha.execute('hero_enroll_submit');
+    } catch (err) {
+      console.warn('reCAPTCHA blocked or failed', err);
     }
+
+    // ---------------- BUILD PAYLOAD ----------------
+    const payload: any = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.fullPhone,
+      courses: formData.selectedCourses,
+      page: course.title,
+    };
+
+    if (captchaV3Token) {
+      payload.captcha_v3 = captchaV3Token;
+    }
+
+    // ---------------- API CALL ----------------
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+
+    const res = await fetch(`${apiUrl}/enroll`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload), // ✅ USE payload here
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+      toast.error(json?.message || 'Submission failed.');
+      return;
+    }
+
+    toast.success(json?.message || 'Your details have been submitted!');
+
+    // Reset form
+    setFormData({
+      name: '',
+      selectedCourses: [course?.id],
+      email: '',
+      fullPhone: '',
+      countryCode: '+91',
+      terms: false,
+    });
+
+  } catch (error) {
+    console.error(error);
+    toast.error('Something went wrong.');
+  } finally {
+    setIsSubmitting(false);
   }
+}
+
 
   // ----------------------------------------------------------
   // 🌟 TRAINERS FROM DETAILS (with fallback)
@@ -393,6 +527,7 @@ export default function Hero({
                   <LazyPhoneInput
                     country="in"
                     value={formData.fullPhone}
+                    countryCodeEditable={false}
                     onChange={(value: any, country: any) =>
                       setFormData({
                         ...formData,
@@ -425,12 +560,26 @@ export default function Hero({
               </div>
 
               {/* SUBMIT */}
-              <button
+              {/* <button
                 type="submit"
                 className="w-full bg-[#1e5ba8] hover:bg-blue-900 text-white font-semibold py-3 rounded-lg"
               >
                 {formDetails?.submit_button_text || 'Submit your details'}
-              </button>
+              </button> */}
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full h-14 bg-gradient-to-r from-blue-500 to-teal-500 text-white font-semibold flex items-center justify-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Submitting...</span>
+                    </>
+                  ) : (
+                    <span>{formDetails?.submit_button_text || 'Submit Your Details'}</span>
+                  )}
+                </Button> 
             </form>
           </div>
         </div>

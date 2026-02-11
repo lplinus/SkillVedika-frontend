@@ -95,111 +95,232 @@ export default function DemoSection({
   /* ----------------------------
        SUBMIT FORM
   ----------------------------- */
+  // async function handleSubmit(e: any) {
+  //   e.preventDefault();
+
+  //   if (isSubmitting) return;   // ✅ block double submit
+  //   setIsSubmitting(true);
+
+  //   // Email validation
+  //   if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+  //     toast.error('Please enter a valid email.');
+  //     return;
+  //   }
+
+  //   // Phone validation
+  //   const digits = formData.fullPhone.replace(/\D/g, '');
+  //   const cc = formData.countryCode.replace('+', '');
+  //   const local = digits.replace(cc, '');
+
+  //   if (local.length < 7 || local.length > 12) {
+  //       toast.error('Enter a valid phone number (7–12 digits).');
+  //     return;
+  //   }
+
+  //   // India strict rule
+  //   if (formData.countryCode === '+91') {
+  //     if (!/^[6-9][0-9]{9}$/.test(local)) {
+  //       toast.error('Enter a valid Indian number starting with 6,7,8,9');
+  //       return;
+  //     }
+  //   }
+
+  //   if (formData.selectedCourses.length === 0) {
+  //     toast.error('Please select at least one course.');
+  //     return;
+  //   }
+
+  //   if (!formData.terms) {
+  //     toast.error('Please accept Terms & Conditions.');
+  //     return;
+  //   }
+
+  //   try {
+  //     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  //     if (!apiUrl) {
+  //       toast.error('Missing NEXT_PUBLIC_API_URL');
+  //       return;
+  //     }
+
+  //     const res = await fetch(`${apiUrl}/enroll`, {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({
+  //         name: formData.fullName,
+  //         email: formData.email,
+  //         phone: formData.fullPhone,
+  //         courses: formData.selectedCourses,
+  //         page: 'Corporate Training',
+  //       }),
+  //     });
+
+  //     if (!res.ok) {
+  //       // Try to read error response
+  //       let errorMessage = 'Failed to submit form';
+  //       try {
+  //         const errorData = await res.json();
+  //         if (errorData.message) {
+  //           errorMessage = errorData.message;
+  //         } else if (errorData.error) {
+  //           errorMessage = errorData.error;
+  //         } else if (errorData.errors) {
+  //           // Handle validation errors
+  //           const errors = Object.values(errorData.errors).flat();
+  //           errorMessage = errors.join(', ') || errorMessage;
+  //         }
+  //       } catch (e) {
+  //         // If response is not JSON, use status text
+  //         errorMessage = `Failed to submit form (${res.status}: ${res.statusText})`;
+  //       }
+  //       console.error('Form submission error:', {
+  //         status: res.status,
+  //         statusText: res.statusText,
+  //         url: `${apiUrl}/enroll`,
+  //       });
+  //       toast.error(errorMessage);
+  //       return;
+  //     }
+
+  //     const json = await res.json();
+  //     toast.success(json.message || 'Submitted successfully!');
+
+  //     // Reset
+  //     setFormData({
+  //       fullName: '',
+  //       email: '',
+  //       fullPhone: '',
+  //       countryCode: '+91',
+  //       selectedCourses: [],
+  //       terms: false,
+  //     });
+  //   } catch (err) {
+  //     toast.error('Something went wrong');
+  //     console.error(err);
+  //   } finally {
+  //     setIsSubmitting(false); // ✅ ALWAYS reset
+  //   }
+  // }
   async function handleSubmit(e: any) {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (isSubmitting) return;   // ✅ block double submit
-    setIsSubmitting(true);
+  if (isSubmitting) return;
+  setIsSubmitting(true);
 
-    // Email validation
-    if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      toast.error('Please enter a valid email.');
+  // ---------------- EMAIL VALIDATION ----------------
+  if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+    toast.error('Please enter a valid email.');
+    setIsSubmitting(false);
+    return;
+  }
+
+  // ---------------- PHONE VALIDATION ----------------
+  const digits = formData.fullPhone.replace(/\D/g, '');
+  const cc = formData.countryCode.replace('+', '');
+  const local = digits.replace(cc, '');
+
+  if (local.length < 7 || local.length > 12) {
+    toast.error('Enter a valid phone number (7–12 digits).');
+    setIsSubmitting(false);
+    return;
+  }
+
+  if (formData.countryCode === '+91') {
+    if (!/^[6-9][0-9]{9}$/.test(local)) {
+      toast.error('Enter a valid Indian number starting with 6,7,8,9');
+      setIsSubmitting(false);
       return;
-    }
-
-    // Phone validation
-    const digits = formData.fullPhone.replace(/\D/g, '');
-    const cc = formData.countryCode.replace('+', '');
-    const local = digits.replace(cc, '');
-
-    if (local.length < 7 || local.length > 12) {
-        toast.error('Enter a valid phone number (7–12 digits).');
-      return;
-    }
-
-    // India strict rule
-    if (formData.countryCode === '+91') {
-      if (!/^[6-9][0-9]{9}$/.test(local)) {
-        toast.error('Enter a valid Indian number starting with 6,7,8,9');
-        return;
-      }
-    }
-
-    if (formData.selectedCourses.length === 0) {
-      toast.error('Please select at least one course.');
-      return;
-    }
-
-    if (!formData.terms) {
-      toast.error('Please accept Terms & Conditions.');
-      return;
-    }
-
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      if (!apiUrl) {
-        toast.error('Missing NEXT_PUBLIC_API_URL');
-        return;
-      }
-
-      const res = await fetch(`${apiUrl}/enroll`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.fullName,
-          email: formData.email,
-          phone: formData.fullPhone,
-          courses: formData.selectedCourses,
-          page: 'Corporate Training',
-        }),
-      });
-
-      if (!res.ok) {
-        // Try to read error response
-        let errorMessage = 'Failed to submit form';
-        try {
-          const errorData = await res.json();
-          if (errorData.message) {
-            errorMessage = errorData.message;
-          } else if (errorData.error) {
-            errorMessage = errorData.error;
-          } else if (errorData.errors) {
-            // Handle validation errors
-            const errors = Object.values(errorData.errors).flat();
-            errorMessage = errors.join(', ') || errorMessage;
-          }
-        } catch (e) {
-          // If response is not JSON, use status text
-          errorMessage = `Failed to submit form (${res.status}: ${res.statusText})`;
-        }
-        console.error('Form submission error:', {
-          status: res.status,
-          statusText: res.statusText,
-          url: `${apiUrl}/enroll`,
-        });
-        toast.error(errorMessage);
-        return;
-      }
-
-      const json = await res.json();
-      toast.success(json.message || 'Submitted successfully!');
-
-      // Reset
-      setFormData({
-        fullName: '',
-        email: '',
-        fullPhone: '',
-        countryCode: '+91',
-        selectedCourses: [],
-        terms: false,
-      });
-    } catch (err) {
-      toast.error('Something went wrong');
-      console.error(err);
-    } finally {
-      setIsSubmitting(false); // ✅ ALWAYS reset
     }
   }
+
+  if (formData.selectedCourses.length === 0) {
+    toast.error('Please select at least one course.');
+    setIsSubmitting(false);
+    return;
+  }
+
+  if (!formData.terms) {
+    toast.error('Please accept Terms & Conditions.');
+    setIsSubmitting(false);
+    return;
+  }
+
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (!apiUrl) {
+      toast.error('Missing NEXT_PUBLIC_API_URL');
+      return;
+    }
+
+    // ---------------- RECAPTCHA V3 ----------------
+    let captchaV3Token: string | null = null;
+
+    try {
+      const { load } = await import('recaptcha-v3');
+      const recaptcha = await load(
+        process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY!
+      );
+
+      captchaV3Token = await recaptcha.execute(
+        'corporate_training_submit'
+      );
+    } catch (err) {
+      console.warn('reCAPTCHA blocked or failed', err);
+    }
+
+    // ---------------- BUILD PAYLOAD ----------------
+    const payload: any = {
+      name: formData.fullName,
+      email: formData.email,
+      phone: formData.fullPhone,
+      courses: formData.selectedCourses,
+      page: 'Corporate Training',
+    };
+
+    if (captchaV3Token) {
+      payload.captcha_v3 = captchaV3Token;
+    }
+
+    // ---------------- API CALL ----------------
+    const res = await fetch(`${apiUrl}/enroll`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+      let errorMessage =
+        json?.message ||
+        json?.error ||
+        (json?.errors
+          ? Object.values(json.errors).flat().join(', ')
+          : 'Failed to submit form');
+
+      toast.error(errorMessage);
+      return;
+    }
+
+    toast.success(json.message || 'Submitted successfully!');
+
+    // Reset
+    setFormData({
+      fullName: '',
+      email: '',
+      fullPhone: '',
+      countryCode: '+91',
+      selectedCourses: [],
+      terms: false,
+    });
+
+  } catch (err) {
+    toast.error('Something went wrong');
+    console.error(err);
+  } finally {
+    setIsSubmitting(false);
+  }
+}
+
 
   /* ------------------ FILTER COURSES ------------------ */
   // Ensure allCourses is always an array
