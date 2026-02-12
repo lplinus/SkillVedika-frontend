@@ -121,7 +121,7 @@ export async function generateMetadata(props: any) {
 
 // Helper to process image from post
 function processPostImage(post: any): string {
-  let img = post?.thumbnail_image || post?.banner_image || post?.images || '/placeholder.svg';
+  let img = post?.banner_image || post?.thumbnail_image || post?.images || '/placeholder.svg';
 
   if (typeof img === 'string' && img.startsWith('[')) {
     try {
@@ -138,54 +138,20 @@ function processPostImage(post: any): string {
 
   return img;
 }
-//  fetching the recent blods and need to add the trening blogs--------------------------------------------------------------------------------
-//trending blog----------------------------------------------------------------
-// async function fetchTrendingBlogs(api: string): Promise<any[]> {
-//   try {
-//     const res = await fetch(`${api}/blogs/public?is_trending=yes`, {
-//       cache: 'force-cache',
-//       next: { revalidate: 300 },
-//     });
-//     if (res.ok) {
-//       const list = await res.json();
-//       if (Array.isArray(list) && list.length > 0) {
-//         return list.slice(0, 6);
-//       }
-//     }
-//   } catch {
-//     // Silently fail
-//   }
 
-//   // Fallback to all blogs
-//   try {
-//     const fallbackRes = await fetch(`${api}/blogs`, {
-//       cache: 'force-cache',
-//       next: { revalidate: 300 },
-//     });
-//     if (fallbackRes.ok) {
-//       const list = await fallbackRes.json();
-//       return Array.isArray(list) ? list.slice(0, 6) : [];
-//     }
-//   } catch {
-//     // Silently fail
-//   }
-
-//   return [];
-// }
 // Helper to fetch trending blogs - ONLY returns if marked 'yes'
 async function fetchTrendingBlogs(api: string): Promise<any[]> {
   try {
-    // We hit the public endpoint with the filter
+    // Use no-store so trending blogs reflect admin changes immediately
     const res = await fetch(`${api}/blogs/public?is_trending=yes`, {
-      cache: 'force-cache', // Use no-store or lower revalidate to see changes immediately
-      next: { revalidate: 300 },
+      cache: 'no-store',
     });
 
     if (res.ok) {
       const list = await res.json();
       // Only return blogs that actually have is_trending === 'yes'
       return Array.isArray(list)
-        ? list.filter((b: any) => b.is_trending === 'yes').slice(0, 6)
+        ? list.filter((b: any) => b.is_trending === 'yes')
         : [];
     }
   } catch (error) {
@@ -194,38 +160,26 @@ async function fetchTrendingBlogs(api: string): Promise<any[]> {
   return [];
 }
 
-
-// Helper to fetch recent blogs with fallback
+// Helper to fetch recent blogs — no limit, show all marked as recent
 // async function fetchRecentBlogs(api: string): Promise<any[]> {
 //   try {
-//     const res = await fetch(`${api}/blogs?recent=yes`, {
-//       cache: 'force-cache',
-//       next: { revalidate: 300 },
+//     const res = await fetch(`${api}/blogs/public`, {
+//       cache: 'no-store',
 //     });
 //     if (res.ok) {
 //       const list = await res.json();
-//       if (Array.isArray(list) && list.length > 0) {
-//         return list.slice(0, 6);
+//       if (Array.isArray(list)) {
+//         // Filter to only blogs marked as recent by admin
+//         return list.filter(
+//           (b: any) =>
+//             b.recent_blog === 'YES' &&
+//             String(b.status).toLowerCase() === 'published'
+//         );
 //       }
 //     }
 //   } catch {
 //     // Silently fail
 //   }
-
-//   // Fallback to all blogs
-//   try {
-//     const fallbackRes = await fetch(`${api}/blogs`, {
-//       cache: 'force-cache',
-//       next: { revalidate: 300 },
-//     });
-//     if (fallbackRes.ok) {
-//       const list = await fallbackRes.json();
-//       return Array.isArray(list) ? list.slice(0, 6) : [];
-//     }
-//   } catch {
-//     // Silently fail
-//   }
-
 //   return [];
 // }
 
@@ -238,8 +192,7 @@ async function fetchRelatedBlogs(api: string, slug: string): Promise<any[]> {
     const res = await fetch(
       `${api}/blogs/public?related_to=${encodeURIComponent(slug)}`,
       {
-        cache: 'force-cache',
-        next: { revalidate: 300 },
+        cache: 'no-store',
       }
     );
 
@@ -272,6 +225,8 @@ async function processResponse<T>(
   return fallback;
 }
 
+
+
 /* ============================================================
    2. PAGE COMPONENT — Updated for Next.js 16
 ============================================================ */
@@ -291,8 +246,8 @@ export default async function BlogDetailPage(props: any) {
   // Process all responses
   const post = await processResponse(postRes, (json) => json, null);
   // const recentBlogs = await fetchRecentBlogs(api);
-  const trendingBlogs = await fetchTrendingBlogs(api);//newly trending blogs
-  const relatedBlogs = await fetchRelatedBlogs(api, cleanSlug);//newly trending blogs
+  const trendingBlogs = await fetchTrendingBlogs(api);
+  const relatedBlogs = await fetchRelatedBlogs(api, cleanSlug);
 
   const allCourses = await processResponse(
     coursesRes,
@@ -331,7 +286,6 @@ export default async function BlogDetailPage(props: any) {
   // Ensure absolute URL for images
   const backendOrigin = api.replace(/\/api$/, '');
   const finalImage = processImageUrl(img, backendOrigin);
-  // const finalImage = `${processImageUrl(img, backendOrigin)}?v=${post.updated_at || post.created_at}`;
 
 
   /* -----------------------------
@@ -368,15 +322,6 @@ export default async function BlogDetailPage(props: any) {
      Render page successfully
   ----------------------------- */
   return (
-    // <main className="min-h-screen bg-white">
-    //   {/* Structured Data for SEO */}
-    //   <StructuredData data={[blogPostingSchema, breadcrumbSchema]} />
-
-    //   <BlogHero post={post} img={finalImage} />
-    //   <BlogContent post={post} />
-    //   <TrendingBlogs blogs={trendingBlogs} /> {/*newly trending blogs*/}
-    //   {/* <RecentBlogs blogs={recentBlogs} /> */}
-    //    <RelatedBlogs blogs={relatedBlogs} />   {/*newly related blogs*/}
     <main className="min-h-screen bg-white flex flex-col">
       <StructuredData data={[blogPostingSchema, breadcrumbSchema]} />
 
@@ -413,8 +358,6 @@ export default async function BlogDetailPage(props: any) {
                   src={finalImage}
                   alt={post?.blog_name || 'Blog image'}
                   fill
-                  // priority
-                  // unoptimized
                   className="object-cover"
                 />
               </div>
@@ -437,7 +380,49 @@ export default async function BlogDetailPage(props: any) {
                       Trending Blogs
                     </h3>
                     <div className="divide-y divide-gray-50">
-                      {trendingBlogs.slice(0, 4).map((blog: any) => (
+                      {trendingBlogs
+                        .filter((blog: any) => blog.blog_id !== post?.blog_id)
+                        .map((blog: any) => (
+                          <a
+                            key={blog.blog_id}
+                            href={`/blog/${blog.url_friendly_title}`}
+                            className="flex gap-3 p-4 hover:bg-gray-50 transition-colors"
+                          >
+                            <div className="w-16 h-16 relative rounded overflow-hidden shrink-0 shadow-sm">
+                              <Image
+                                src={processImageUrl(
+                                  blog.thumbnail_image || blog.banner_image,
+                                  backendOrigin
+                                )}
+                                alt={blog.blog_name}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                            <div className="flex flex-col justify-center">
+                              <p className="text-sm font-semibold line-clamp-2 text-gray-800">
+                                {blog.blog_name}
+                              </p>
+                              <p className="text-xs text-gray-400 mt-1">
+                                {blog.published_at
+                                  ? new Date(blog.published_at).toDateString()
+                                  : 'Recent'}
+                              </p>
+                            </div>
+                          </a>
+                        ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Recent Blogs — commented out, shown on other pages */}
+                {/* {recentBlogs.length > 0 && (
+                  <div className="bg-white border border-gray-100 rounded-lg shadow-sm overflow-hidden">
+                    <h3 className="text-lg font-bold px-5 py-4 border-b bg-gray-50/50">
+                      Recent Blogs
+                    </h3>
+                    <div className="divide-y divide-gray-50">
+                      {recentBlogs.map((blog: any) => (
                         <a
                           key={blog.blog_id}
                           href={`/blog/${blog.url_friendly_title}`}
@@ -468,7 +453,7 @@ export default async function BlogDetailPage(props: any) {
                       ))}
                     </div>
                   </div>
-                )}
+                )} */}
 
                 {/* Related Blogs */}
                 {relatedBlogs.length > 0 && (
@@ -477,45 +462,37 @@ export default async function BlogDetailPage(props: any) {
                       Related Blogs
                     </h3>
                     <div className="divide-y divide-gray-50">
-                      {relatedBlogs.slice(0, 4).map((blog: any) => (
-                        <a
-                          key={blog.blog_id}
-                          href={`/blog/${blog.url_friendly_title}`}
-                          className="flex gap-3 p-4 hover:bg-gray-50 transition-colors"
-                        >
-                          <div className="w-16 h-16 relative rounded overflow-hidden shrink-0 shadow-sm">
-                            <Image
-                              src={processImageUrl(
-                                blog.thumbnail_image || blog.banner_image,
-                                backendOrigin
-                              )}
-                              alt={blog.blog_name}
-                              fill
-                              className="object-cover"
-                            />
-                            {/* <Image
-                              src={`${processImageUrl(
-                                blog.thumbnail_image || blog.banner_image,
-                                backendOrigin
-                              )}?v=${blog.updated_at || blog.created_at}`}
-                              alt={blog.blog_name}
-                              fill
-                              unoptimized
-                              className="object-cover"
-                            /> */}
-                          </div>
-                          <div className="flex flex-col justify-center">
-                            <p className="text-sm font-semibold line-clamp-2 text-gray-800">
-                              {blog.blog_name}
-                            </p>
-                            <p className="text-xs text-gray-400 mt-1">
-                              {blog.published_at
-                                ? new Date(blog.published_at).toDateString()
-                                : 'Recent'}
-                            </p>
-                          </div>
-                        </a>
-                      ))}
+                      {relatedBlogs
+                        .filter((blog: any) => blog.blog_id !== post?.blog_id)
+                        .map((blog: any) => (
+                          <a
+                            key={blog.blog_id}
+                            href={`/blog/${blog.url_friendly_title}`}
+                            className="flex gap-3 p-4 hover:bg-gray-50 transition-colors"
+                          >
+                            <div className="w-16 h-16 relative rounded overflow-hidden shrink-0 shadow-sm">
+                              <Image
+                                src={processImageUrl(
+                                  blog.thumbnail_image || blog.banner_image,
+                                  backendOrigin
+                                )}
+                                alt={blog.blog_name}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                            <div className="flex flex-col justify-center">
+                              <p className="text-sm font-semibold line-clamp-2 text-gray-800">
+                                {blog.blog_name}
+                              </p>
+                              <p className="text-xs text-gray-400 mt-1">
+                                {blog.published_at
+                                  ? new Date(blog.published_at).toDateString()
+                                  : 'Recent'}
+                              </p>
+                            </div>
+                          </a>
+                        ))}
                     </div>
                   </div>
                 )}
@@ -531,4 +508,3 @@ export default async function BlogDetailPage(props: any) {
     </main>
   );
 }
-

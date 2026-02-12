@@ -74,8 +74,8 @@ export default function BlogSection(_props: BlogSectionProps) {
 
       const normalized: Blog[] = (data || []).map((item: any) => {
         let img =
-          item.banner_image ||
           item.thumbnail_image ||
+          item.banner_image ||
           '/placeholder.svg';
 
         if (typeof img === 'string' && img.startsWith('[')) {
