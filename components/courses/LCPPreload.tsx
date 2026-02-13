@@ -23,7 +23,7 @@ export default function LCPPreload({ imageUrl }: LCPPreloadProps) {
           '/upload/w_1200,h_675,c_fill,q_auto,f_auto/'
         )
       : imageUrl;
-
+  
     const encodedUrl = encodeURI(optimizedUrl);
 
     // Avoid duplicate preload tags
