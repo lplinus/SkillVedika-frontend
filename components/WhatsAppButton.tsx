@@ -46,7 +46,7 @@ function WhatsAppButton() {
 
   return (
     <aside
-      className="hidden md:block fixed right-24 bottom-14 z-50"
+      className="hidden md:block fixed right-14 bottom-14 z-50"
       aria-label="WhatsApp contact"
     >
       <a
