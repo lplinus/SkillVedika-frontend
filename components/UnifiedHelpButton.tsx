@@ -134,7 +134,7 @@ function UnifiedHelpButton() {
     <>
       {/* FAB */}
       <div
-        className={`sm:hidden fixed right-4 bottom-24 z-50 transition-all
+        className={`sm:hidden fixed right-4 bottom-36 z-50 transition-all
           ${hideButton ? 'opacity-0 pointer-events-none' : 'opacity-100'}
         `}
       >
