@@ -375,7 +375,7 @@ export default function DemoSection({
                           setFormData({
                             ...formData,
                             // fullPhone: '+' + value,
-                             fullPhone: value,
+                            fullPhone: value,
                             countryCode: '+' + ((country as any)?.dialCode || ''),
                           })
                         }
@@ -416,10 +416,24 @@ export default function DemoSection({
                 {/* TERMS */}
                 <div className="flex items-start gap-3">
                   <Label className="flex items-start gap-3">
-                    <Checkbox
+                    {/* <Checkbox
                       id="demo-terms"
                       checked={formData.terms}
                       onCheckedChange={v => setFormData({ ...formData, terms: !!v })}
+                    /> */}
+                    <Checkbox
+                      id="corporate-terms"
+                      checked={Boolean(formData.terms)}
+                      onCheckedChange={v =>
+                        setFormData({ ...formData, terms: !!v })
+                      }
+                      aria-label="Accept Terms and Conditions"
+                      className="
+                        border-blue-300
+                        data-[state=checked]:bg-blue-800
+                        data-[state=checked]:border-blue-800
+                        data-[state=checked]:text-white
+                      "
                     />
                     <span className="text-sm text-gray-600">
                       {formDetails?.terms_prefix || 'I agree to the'}{' '}
@@ -431,12 +445,13 @@ export default function DemoSection({
                       >
                         {formDetails?.terms_label || 'Terms & Conditions'}
                       </a>
+
                       .
                     </span>
                   </Label>
                 </div>
 
-                 <Button
+                <Button
                   type="submit"
                   disabled={isSubmitting}
                   className="w-full h-14 bg-gradient-to-r from-blue-500 to-teal-500 text-white font-semibold flex items-center justify-center gap-2"

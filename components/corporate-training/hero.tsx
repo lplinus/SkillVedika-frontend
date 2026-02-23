@@ -33,8 +33,11 @@ export default function Hero({
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-[#E8F0F7] to-[#F0F4F9] py-10 sm:py-14 lg:py-20">
       {/* === Hero Content === */}
+      {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-6 lg:flex-row lg:gap-16 items-center">
+        {/* <div className="flex flex-col gap-6 lg:flex-row lg:gap-16 items-center"> */}
+        <div className="flex flex-col gap-6 lg:flex-row lg:gap-16 items-start lg:items-center">
+        
           {/* Left Content - Text First on Mobile */}
           <div className="w-full lg:w-1/2 order-2 lg:order-1">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">

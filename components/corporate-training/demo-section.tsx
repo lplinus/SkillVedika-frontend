@@ -201,125 +201,125 @@ export default function DemoSection({
   //   }
   // }
   async function handleSubmit(e: any) {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (isSubmitting) return;
-  setIsSubmitting(true);
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
-  // ---------------- EMAIL VALIDATION ----------------
-  if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-    toast.error('Please enter a valid email.');
-    setIsSubmitting(false);
-    return;
-  }
-
-  // ---------------- PHONE VALIDATION ----------------
-  const digits = formData.fullPhone.replace(/\D/g, '');
-  const cc = formData.countryCode.replace('+', '');
-  const local = digits.replace(cc, '');
-
-  if (local.length < 7 || local.length > 12) {
-    toast.error('Enter a valid phone number (7–12 digits).');
-    setIsSubmitting(false);
-    return;
-  }
-
-  if (formData.countryCode === '+91') {
-    if (!/^[6-9][0-9]{9}$/.test(local)) {
-      toast.error('Enter a valid Indian number starting with 6,7,8,9');
+    // ---------------- EMAIL VALIDATION ----------------
+    if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      toast.error('Please enter a valid email.');
       setIsSubmitting(false);
       return;
     }
-  }
 
-  if (formData.selectedCourses.length === 0) {
-    toast.error('Please select at least one course.');
-    setIsSubmitting(false);
-    return;
-  }
+    // ---------------- PHONE VALIDATION ----------------
+    const digits = formData.fullPhone.replace(/\D/g, '');
+    const cc = formData.countryCode.replace('+', '');
+    const local = digits.replace(cc, '');
 
-  if (!formData.terms) {
-    toast.error('Please accept Terms & Conditions.');
-    setIsSubmitting(false);
-    return;
-  }
-
-  try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    if (!apiUrl) {
-      toast.error('Missing NEXT_PUBLIC_API_URL');
+    if (local.length < 7 || local.length > 12) {
+      toast.error('Enter a valid phone number (7–12 digits).');
+      setIsSubmitting(false);
       return;
     }
 
-    // ---------------- RECAPTCHA V3 ----------------
-    let captchaV3Token: string | null = null;
+    if (formData.countryCode === '+91') {
+      if (!/^[6-9][0-9]{9}$/.test(local)) {
+        toast.error('Enter a valid Indian number starting with 6,7,8,9');
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
+    if (formData.selectedCourses.length === 0) {
+      toast.error('Please select at least one course.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!formData.terms) {
+      toast.error('Please accept Terms & Conditions.');
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
-      const { load } = await import('recaptcha-v3');
-      const recaptcha = await load(
-        process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY!
-      );
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!apiUrl) {
+        toast.error('Missing NEXT_PUBLIC_API_URL');
+        return;
+      }
 
-      captchaV3Token = await recaptcha.execute(
-        'corporate_training_submit'
-      );
+      // ---------------- RECAPTCHA V3 ----------------
+      let captchaV3Token: string | null = null;
+
+      try {
+        const { load } = await import('recaptcha-v3');
+        const recaptcha = await load(
+          process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY!
+        );
+
+        captchaV3Token = await recaptcha.execute(
+          'corporate_training_submit'
+        );
+      } catch (err) {
+        console.warn('reCAPTCHA blocked or failed', err);
+      }
+
+      // ---------------- BUILD PAYLOAD ----------------
+      const payload: any = {
+        name: formData.fullName,
+        email: formData.email,
+        phone: formData.fullPhone,
+        courses: formData.selectedCourses,
+        page: 'Corporate Training',
+      };
+
+      if (captchaV3Token) {
+        payload.captcha_v3 = captchaV3Token;
+      }
+
+      // ---------------- API CALL ----------------
+      const res = await fetch(`${apiUrl}/enroll`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        let errorMessage =
+          json?.message ||
+          json?.error ||
+          (json?.errors
+            ? Object.values(json.errors).flat().join(', ')
+            : 'Failed to submit form');
+
+        toast.error(errorMessage);
+        return;
+      }
+
+      toast.success(json.message || 'Submitted successfully!');
+
+      // Reset
+      setFormData({
+        fullName: '',
+        email: '',
+        fullPhone: '',
+        countryCode: '+91',
+        selectedCourses: [],
+        terms: false,
+      });
+
     } catch (err) {
-      console.warn('reCAPTCHA blocked or failed', err);
+      toast.error('Something went wrong');
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    // ---------------- BUILD PAYLOAD ----------------
-    const payload: any = {
-      name: formData.fullName,
-      email: formData.email,
-      phone: formData.fullPhone,
-      courses: formData.selectedCourses,
-      page: 'Corporate Training',
-    };
-
-    if (captchaV3Token) {
-      payload.captcha_v3 = captchaV3Token;
-    }
-
-    // ---------------- API CALL ----------------
-    const res = await fetch(`${apiUrl}/enroll`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-
-    const json = await res.json();
-
-    if (!res.ok) {
-      let errorMessage =
-        json?.message ||
-        json?.error ||
-        (json?.errors
-          ? Object.values(json.errors).flat().join(', ')
-          : 'Failed to submit form');
-
-      toast.error(errorMessage);
-      return;
-    }
-
-    toast.success(json.message || 'Submitted successfully!');
-
-    // Reset
-    setFormData({
-      fullName: '',
-      email: '',
-      fullPhone: '',
-      countryCode: '+91',
-      selectedCourses: [],
-      terms: false,
-    });
-
-  } catch (err) {
-    toast.error('Something went wrong');
-    console.error(err);
-  } finally {
-    setIsSubmitting(false);
   }
-}
 
 
   /* ------------------ FILTER COURSES ------------------ */
@@ -568,6 +568,14 @@ export default function DemoSection({
 
             {/* TERMS */}
             <div className="flex items-start gap-3">
+              {/* <Checkbox
+                id="corporate-terms"
+                checked={Boolean(formData.terms)}
+                onCheckedChange={v =>
+                  startTransition(() => setFormData({ ...formData, terms: Boolean(v) }))
+                }
+                aria-label="Accept Terms and Conditions"
+              /> */}
               <Checkbox
                 id="corporate-terms"
                 checked={Boolean(formData.terms)}
@@ -575,6 +583,12 @@ export default function DemoSection({
                   startTransition(() => setFormData({ ...formData, terms: Boolean(v) }))
                 }
                 aria-label="Accept Terms and Conditions"
+                className="
+    border-blue-300
+    data-[state=checked]:bg-blue-800
+    data-[state=checked]:border-blue-800
+    data-[state=checked]:text-white
+  "
               />
               <label htmlFor="corporate-terms" className="text-sm text-gray-600 cursor-pointer">
                 {formDetails?.terms_prefix || 'I agree with the'}{' '}
@@ -591,20 +605,20 @@ export default function DemoSection({
             </div>
 
             {/* SUBMIT BUTTON */}
-             <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full h-14 bg-gradient-to-r from-blue-500 to-teal-500 text-white font-semibold flex items-center justify-center gap-2"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Submitting...</span>
-                    </>
-                  ) : (
-                    <span>{formDetails?.submit_button_text || 'Submit Your Details'}</span>
-                  )}
-                </Button>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full h-14 bg-gradient-to-r from-blue-500 to-teal-500 text-white font-semibold flex items-center justify-center gap-2"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Submitting...</span>
+                </>
+              ) : (
+                <span>{formDetails?.submit_button_text || 'Submit Your Details'}</span>
+              )}
+            </Button>
           </form>
 
           {/* FOOTER */}

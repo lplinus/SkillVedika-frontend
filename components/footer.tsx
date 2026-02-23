@@ -44,11 +44,11 @@ function Footer() {
         cache: 'no-store',
         headers: { 'Accept': 'application/json' },
       });
-      
+
       if (!res.ok) {
         throw new Error(`Failed to fetch footer settings: ${res.status}`);
       }
-      
+
       const response = await res.json();
       // Handle API response structure: { success: true, data: {...} } or direct {...}
       const data = response?.data || response;
@@ -78,24 +78,24 @@ function Footer() {
         logo: footerSettings.logo ?? '/home/Frame 236.webp',
         about: footerSettings.about ?? 'SkillVedika is a professional training institute offering high-quality, expert-led courses designed to help learners grow and succeed in their careers.',
         explore: footerSettings.explore ?? 'Explore',
-        explore_links: footerSettings.explore_links && footerSettings.explore_links.length > 0 
-          ? footerSettings.explore_links 
+        explore_links: footerSettings.explore_links && footerSettings.explore_links.length > 0
+          ? footerSettings.explore_links
           : [
-              { text: 'All courses', slug: '/courses' },
-              { text: 'About', slug: '/about-us' },
-              { text: 'Contact', slug: '/contact-us' },
-              { text: 'Blog', slug: '/blog' },
-            ],
+            { text: 'All courses', slug: '/courses' },
+            { text: 'About', slug: '/about-us' },
+            { text: 'Contact', slug: '/contact-us' },
+            { text: 'Blog', slug: '/blog' },
+          ],
         support: footerSettings.support ?? 'Support',
         support_links: footerSettings.support_links && footerSettings.support_links.length > 0
           ? footerSettings.support_links
           : [
-              { text: 'Job support', slug: '/on-job-support' },
-              { text: 'Become an instructor', slug: '/become-instructor' },
-              { text: 'Tutorials', slug: '/tutorials' },
-              { text: 'Trending courses', slug: '/courses/trending' },
-              { text: 'Interview questions', slug: '/interview-questions' },
-            ],
+            { text: 'Job support', slug: '/on-job-support' },
+            { text: 'Become an instructor', slug: '/become-instructor' },
+            { text: 'Tutorials', slug: '/tutorials' },
+            { text: 'Trending courses', slug: '/courses/trending' },
+            { text: 'Interview questions', slug: '/interview-questions' },
+          ],
         contact: footerSettings.contact ?? 'Contact',
         contact_details: footerSettings.contact_details || {
           phone: '+91 8790900881',
@@ -119,7 +119,7 @@ function Footer() {
         copyright: footerSettings.copyright ?? 'SkillVedika © 2025 - All Rights Reserved',
       };
     }
-    
+
     // Fallback defaults when API data is not yet loaded
     return {
       get_in_touch: 'Get in touch with us:',
@@ -170,7 +170,7 @@ function Footer() {
     setSuccessMessage(null);
     setErrorMessage(null);
     const apiUrl = getApiUrl('/enroll');
-    
+
     // Validate email format and length
     if (
       !email ||
@@ -180,7 +180,7 @@ function Footer() {
       setErrorMessage('Please enter a valid email address');
       return;
     }
-    
+
     setSubmitting(true);
     try {
       const payload: Record<string, unknown> = {
@@ -218,10 +218,10 @@ function Footer() {
 
   return (
     <>
-    {/* 🔥 Footer Sentinel (must be self-closing) */}
-     <div id="footer-sentinel" className="h-px w-full"/>
-      
-      <footer 
+      {/* 🔥 Footer Sentinel (must be self-closing) */}
+      <div id="footer-sentinel" className="h-px w-full" />
+
+      <footer
         id="footer"
         className="bg-[#1A3F66] text-white"
         role="contentinfo"
@@ -230,7 +230,7 @@ function Footer() {
       >
         <div className="max-w-7xl mx-auto px-6 py-12" suppressHydrationWarning>
           {/* Newsletter Section */}
-          <section 
+          <section
             className="flex flex-col md:flex-row items-center justify-between border-b border-white/20 pb-10 mb-10"
             aria-labelledby="newsletter-heading"
             suppressHydrationWarning
@@ -238,15 +238,14 @@ function Footer() {
             <h3 id="newsletter-heading" className="text-2xl font-semibold mb-6 md:mb-0">
               {settings.get_in_touch}
             </h3>
-  
+
             {/* Email Input */}
             <div className="flex flex-col md:flex-row md:items-center gap-3 w-full md:w-auto" suppressHydrationWarning>
               {/* Accessibility: Live region for form feedback */}
               {(successMessage || errorMessage) && (
                 <div
-                  className={`px-4 py-2 flex items-center gap-2 text-sm whitespace-normal break-words ${
-                    successMessage ? 'text-green-300' : 'text-red-300'
-                  }`}
+                  className={`px-4 py-2 flex items-center gap-2 text-sm whitespace-normal break-words ${successMessage ? 'text-green-300' : 'text-red-300'
+                    }`}
                   role="status"
                   aria-live="polite"
                   aria-atomic="true"
@@ -262,10 +261,14 @@ function Footer() {
                   )}
                 </div>
               )}
-  
+
+
+
+
               {/* Accessibility: Proper form with labels and error handling */}
-              <form
+              {/* <form
                 className="flex w-full md:w-[500px] bg-white rounded-full overflow-hidden items-center"
+                // className="flex w-full md:w-[500px] bg-white rounded-full overflow-hidden items-center"
                 onSubmit={handleSubmit}
                 noValidate
                 aria-label="Newsletter subscription"
@@ -288,8 +291,9 @@ function Footer() {
                   <span id="footer-email-error" className="sr-only">
                     {errorMessage}
                   </span>
-                )}
-                <button
+                )} */}
+
+              {/* <button
                   type="submit"
                   disabled={submitting}
                   aria-label="Subscribe to newsletter"
@@ -297,11 +301,87 @@ function Footer() {
                 >
                   <Send size={22} className="text-white" aria-hidden="true" />
                   {submitting && <span className="sr-only">Submitting...</span>}
+                </button> */}
+              {/* <button
+                  type="submit"
+                  disabled={submitting}
+                  className="bg-[#1A3F66] text-white px-6 py-3 rounded-r-full hover:bg-[#2C5AA0] transition-colors disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-900 focus:ring-white cursor-pointer"
+                >
+                  {submitting ? (
+                    <span className="sr-only">Submitting...</span>
+                  ) : (
+                    <>
+                      <Send size={22} aria-hidden="true" />
+
+                    </>
+                  )}
+                </button>
+
+
+
+
+
+              </form> */}
+
+              <form
+                onSubmit={handleSubmit}
+                noValidate
+                aria-label="Newsletter subscription"
+                className="relative flex w-full md:w-[500px] bg-[#E5E5E5] rounded-full items-center h-12 overflow-hidden"
+              >
+                <label htmlFor="footer-email" className="sr-only">
+                  Email address
+                </label>
+
+                <input
+                  id="footer-email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={settings.email_placeholder}
+                  className="
+      flex-1
+      bg-transparent
+      px-6
+      h-full
+      text-gray-700
+      focus:outline-none
+      /* No rounding on the left of the input inside the container */
+    "
+                />
+
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  aria-label="Subscribe"
+                  className="
+      absolute
+      right-[-1px]   /* Bleed 1px to the right to kill the white line */
+      top-[-1px]     /* Bleed 1px up */
+      bottom-[-1px]  /* Bleed 1px down */
+      aspect-square
+      h-[calc(100%+4px)] /* Height is parent + bleeds */
+      flex items-center justify-center
+      bg-[#1A3F66]
+      hover:bg-[#163653]
+      transition-colors duration-200
+      disabled:opacity-60
+      /* Sharp straight line on the left, rounded on the right */
+      rounded-l-none
+      rounded-r-full
+      z-10
+      border-none
+    "
+                >
+                  <Send size={18} className="text-white" />
                 </button>
               </form>
+
+
+
             </div>
           </section>
-  
+
           {/* Main Footer Grid */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10 lg:gap-20 text-blue-100" suppressHydrationWarning>
             {/* SkillVedika Info */}
@@ -320,7 +400,7 @@ function Footer() {
               />
               <p className="text-sm leading-relaxed mb-6 text-blue-100">{settings.about}</p>
               <p className="text-sm mb-3 text-blue-100">{settings.follow_us}</p>
-  
+
               {/* Social Icons */}
               <nav aria-label="Social media links">
                 <ul className="flex space-x-4 text-white list-none">
@@ -338,7 +418,7 @@ function Footer() {
                 </ul>
               </nav>
             </section>
-  
+
             {/* Explore */}
             <nav aria-labelledby="explore-heading" className="md:pl-4 lg:pl-6">
               <h3 id="explore-heading" className="font-semibold text-base mb-4 text-white">
@@ -359,7 +439,7 @@ function Footer() {
                 ))}
               </ul>
             </nav>
-  
+
             {/* Support */}
             <nav aria-labelledby="support-heading" className="md:pl-4 lg:pl-6">
               <h3 id="support-heading" className="font-semibold text-base mb-4 text-white">
@@ -380,7 +460,7 @@ function Footer() {
                 ))}
               </ul>
             </nav>
-  
+
             {/* Contact */}
             <section aria-labelledby="contact-heading" className="md:pl-4 lg:pl-6">
               <h3 id="contact-heading" className="font-semibold text-base mb-4 text-white">
@@ -390,7 +470,7 @@ function Footer() {
                 {settings.contact_details?.phone && (
                   <div suppressHydrationWarning>
                     <span className="font-medium text-white">Mobile:</span>{' '}
-                    <a 
+                    <a
                       href={`tel:${settings.contact_details.phone.replaceAll(/\s+/g, '')}`}
                       className="hover:underline focus:outline-none cursor-pointer"
                     >
@@ -401,7 +481,7 @@ function Footer() {
                 {settings.contact_details?.email && (
                   <div suppressHydrationWarning>
                     <span className="font-medium text-white">Email:</span>{' '}
-                    <a 
+                    <a
                       href={`mailto:${settings.contact_details.email}`}
                       className="hover:underline focus:outline-none cursor-pointer"
                     >
@@ -413,7 +493,7 @@ function Footer() {
                   // Parse location - supports both old string format and new JSON format with URL
                   let locationText = location;
                   let locationUrl: string | undefined;
-                  
+
                   try {
                     const parsed = JSON.parse(location);
                     if (typeof parsed === 'object' && parsed.text) {
@@ -423,7 +503,7 @@ function Footer() {
                   } catch {
                     // Not JSON, use as plain text
                   }
-                  
+
                   return (
                     <div key={`location-${location}-${idx}`} suppressHydrationWarning>
                       <span className="font-medium text-white">Location:</span>{' '}
@@ -445,10 +525,10 @@ function Footer() {
               </address>
             </section>
           </div>
-  
+
           {/* Divider */}
           <div className="border-t border-white/20 mt-10" role="separator" aria-hidden="true" suppressHydrationWarning></div>
-  
+
           {/* Copyright */}
           <div className="text-center text-sm text-blue-200 pt-6" suppressHydrationWarning>
             <p>{settings.copyright}</p>

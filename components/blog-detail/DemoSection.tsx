@@ -107,49 +107,49 @@ export default function DemoSection({
   ------------------------------ */
   async function handleSubmit(e: any) {
     e.preventDefault();
-  
+
     if (isSubmitting) return; // block double submit
-  
+
     // ---------------- VALIDATIONS ----------------
     if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
       alert('Please enter a valid email.');
       return;
     }
-  
+
     const digits = formData.fullPhone.replace(/\D/g, '');
     const cc = formData.countryCode.replace('+', '');
     const local = digits.replace(cc, '');
-  
+
     if (local.length < 7 || local.length > 12) {
       alert('Enter a valid phone number (7–12 digits).');
       return;
     }
-  
+
     if (formData.countryCode === '+91' && !/^[6-9][0-9]{9}$/.test(local)) {
       alert('Enter a valid Indian number starting with 6–9.');
       return;
     }
-  
+
     if (formData.selectedCourses.length === 0) {
       alert('Please select at least one course.');
       return;
     }
-  
+
     if (!formData.terms) {
       alert('Please accept Terms & Conditions.');
       return;
     }
-  
+
     // ✅ LOCK ONLY AFTER ALL VALIDATIONS PASS
     setIsSubmitting(true);
-  
+
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       if (!apiUrl) {
         alert('NEXT_PUBLIC_API_URL not set');
         return;
       }
-  
+
       const res = await fetch(`${apiUrl}/enroll`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -161,15 +161,15 @@ export default function DemoSection({
           page: 'Blog Details',
         }),
       });
-  
+
       if (!res.ok) {
         alert('Failed to submit form.');
         return;
       }
-  
+
       const json = await res.json();
       alert(json.message || 'Demo Booked Successfully!');
-  
+
       setFormData({
         fullName: '',
         email: '',
@@ -185,7 +185,7 @@ export default function DemoSection({
       setIsSubmitting(false); // ✅ ALWAYS unlock
     }
   }
-  
+
 
   return (
     <section className="py-20 px-6 bg-blue-100 relative overflow-hidden">
@@ -419,11 +419,40 @@ export default function DemoSection({
               </div>
 
               {/* TERMS */}
-              <div className="flex items-start gap-3">
+              {/* <div className="flex items-start gap-3">
                 <Checkbox
                   checked={Boolean(formData.terms)}
                   onCheckedChange={v => setFormData({ ...formData, terms: Boolean(v) })}
+                  
                 />
+                <label className="text-sm text-gray-600">
+                  {formDetails?.terms_prefix || 'I agree with the'}{' '}
+                  <a
+                    className="text-blue-600 hover:underline"
+                    href={formDetails?.terms_link || '/terms-and-conditions'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {formDetails?.terms_label || 'Terms & Conditions'}
+                  </a>
+                  .
+                </label>
+              </div> */}
+
+              <div className="flex items-start gap-3">
+                <Checkbox
+                  checked={Boolean(formData.terms)}
+                  onCheckedChange={v =>
+                    setFormData({ ...formData, terms: Boolean(v) })
+                  }
+                  className="
+      border-blue-800
+      data-[state=checked]:bg-blue-800
+      data-[state=checked]:border-blue-800
+      data-[state=checked]:text-white
+    "
+                />
+
                 <label className="text-sm text-gray-600">
                   {formDetails?.terms_prefix || 'I agree with the'}{' '}
                   <a

@@ -487,7 +487,7 @@ export default function InstructorForm({ formTitle = "Apply to Become an Instruc
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="w-full bg-blue-600 hover:bg-blue-700"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
           >
             {isSubmitting ? (
               <>

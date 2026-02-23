@@ -57,7 +57,9 @@ export default function KeyFeatures({ keyFeatures }: Readonly<KeyFeaturesProps>)
           </div>
 
           {/* Center Icon - Smaller on mobile */}
-          <div className="relative w-64 h-64 flex items-center justify-center animate-spin-slow">
+          {/* <div className="relative w-64 h-64 flex items-center justify-center animate-spin-slow"> */}
+          <div className="relative w-64 h-64 mx-auto flex items-center justify-center animate-spin-slow">
+
             <div className="absolute inset-0 rounded-full border-[3px] border-[#2C5AA0]/30" />
 
             <div className="relative w-[256px] h-[256px]">
@@ -124,6 +126,7 @@ export default function KeyFeatures({ keyFeatures }: Readonly<KeyFeaturesProps>)
 
           {/* CENTER ROTATING ICON */}
           <div className="relative w-64 h-64 flex items-center justify-center animate-spin-slow">
+          {/* <div className="relative w-64 h-64 mx-auto flex items-center justify-center animate-spin-slow"> */}
             <div className="absolute inset-0 rounded-full border-[3px] border-[#2C5AA0]/30" />
 
             <div className="relative w-[256px] h-[256px]">

@@ -231,6 +231,14 @@ export default function CourseTestimonials({
     return null;
   }
 
+  // Ensure enough items so that the scrolling flex container is wider than the viewport.
+  // We duplicate the original array to maintain perfect looping without clipping.
+  let displayTestimonials = testimonials;
+  if (testimonials.length > 0 && testimonials.length < 5) {
+    const factor = Math.ceil(5 / testimonials.length);
+    displayTestimonials = Array(factor).fill(testimonials).flat();
+  }
+
   return (
     <section
       className="bg-gradient-to-b from-gray-50 to-white py-16 px-4 sm:px-6 lg:px-8"
@@ -244,7 +252,7 @@ export default function CourseTestimonials({
         <StructuredData data={aggregateRatingSchema} />
       )}
 
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto overflow-hidden">
         {/* Header */}
         <header className="text-center mb-12">
           <h2
@@ -287,11 +295,11 @@ export default function CourseTestimonials({
 
         {/* Loading State */}
         {loading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
+          <div className="flex gap-6 overflow-hidden">
+            {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm animate-pulse h-64"
+                className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm animate-pulse h-64 w-[320px] md:w-[380px] lg:w-[420px] flex-shrink-0"
                 aria-hidden="true"
               >
                 <div className="h-4 bg-gray-200 rounded w-3/4 mb-4" />
@@ -302,7 +310,120 @@ export default function CourseTestimonials({
           </div>
         )}
 
-        {/* Testimonials Grid */}
+        {/* Testimonials Marquee */}
+        {!loading && displayTestimonials.length > 0 && (
+          <div className="relative flex overflow-hidden group gap-6 py-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 w-screen xl:w-full xl:mx-auto xl:px-0 max-w-[100vw]">
+            <style>{`
+              @keyframes marquee {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(calc(-100% - 1.5rem)); }
+              }
+              .animate-marquee {
+                animation: marquee 40s linear infinite;
+              }
+              @media (max-width: 768px) {
+                .animate-marquee {
+                  animation-duration: 30s;
+                }
+              }
+              .group:hover .animate-marquee {
+                animation-play-state: paused;
+              }
+            `}</style>
+
+            {[1, 2].map((setIndex) => (
+              <div
+                key={`marquee-set-${setIndex}`}
+                className="flex gap-6 animate-marquee flex-shrink-0"
+                role={setIndex === 1 ? "list" : "presentation"}
+                aria-hidden={setIndex === 2 ? "true" : "false"}
+                aria-label={setIndex === 1 ? "Student testimonials" : undefined}
+              >
+                {displayTestimonials.map((testimonial, index) => (
+                  <article
+                    key={setIndex === 1 ? (testimonial.id || `testimonial-${index}`) : `dup-${index}`}
+                    className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 w-[320px] md:w-[380px] lg:w-[420px] flex-shrink-0"
+                    role={setIndex === 1 ? "listitem" : "presentation"}
+                    tabIndex={setIndex === 1 ? 0 : -1}
+                  >
+                    {/* Student Info */}
+                    <header className="flex items-start gap-4 mb-4">
+                      {/* Profile Image */}
+                      <figure className="flex-shrink-0">
+                        {testimonial.profileImage ? (
+                          <Image
+                            src={getImageUrl(testimonial.profileImage, 112)}
+                            alt={`${testimonial.studentName}'s profile`}
+                            width={56}
+                            height={56}
+                            className="rounded-full object-cover"
+                            loading="lazy"
+                            sizes="56px"
+                            unoptimized={typeof testimonial.profileImage === 'string' && testimonial.profileImage.includes('res.cloudinary.com')}
+                          />
+                        ) : (
+                          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-semibold text-lg">
+                            {testimonial.studentName.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                      </figure>
+
+                      {/* Student Details */}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                          {testimonial.studentName}
+                          {testimonial.verified && (
+                            <CheckCircle2
+                              size={16}
+                              className="text-blue-500 flex-shrink-0"
+                              aria-label="Verified student"
+                            />
+                          )}
+                        </h3>
+                        {(testimonial.studentRole || testimonial.studentCompany) && (
+                          <p className="text-sm text-gray-600 mt-1">
+                            {testimonial.studentRole}
+                            {testimonial.studentRole && testimonial.studentCompany && ' at '}
+                            {testimonial.studentCompany}
+                          </p>
+                        )}
+                        <p className="text-xs text-blue-600 font-medium mt-1">{testimonial.courseCategory}</p>
+                      </div>
+                    </header>
+
+                    {/* Rating */}
+                    <div className="flex items-center gap-1 mb-3" aria-label={`Rating: ${testimonial.rating} out of 5 stars`}>
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          size={16}
+                          className={
+                            star <= testimonial.rating
+                              ? 'fill-yellow-400 text-yellow-400'
+                              : 'text-gray-300'
+                          }
+                          aria-hidden="true"
+                        />
+                      ))}
+                      <span className="ml-2 text-sm font-medium text-gray-700">
+                        {testimonial.rating}.0
+                      </span>
+                    </div>
+
+                    {/* Testimonial Text */}
+                    <blockquote className="flex-1 text-gray-700 text-sm leading-relaxed">
+                      <p className="line-clamp-3" aria-label={`Testimonial from ${testimonial.studentName}`}>
+                        {testimonial.testimonial}
+                      </p>
+                    </blockquote>
+                  </article>
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* --- Older Grid Layout Reference ---
         {!loading && testimonials.length > 0 && (
           <div 
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
@@ -316,9 +437,7 @@ export default function CourseTestimonials({
                 role="listitem"
                 tabIndex={0}
               >
-                {/* Student Info */}
                 <header className="flex items-start gap-4 mb-4">
-                  {/* Profile Image */}
                   <figure className="flex-shrink-0">
                     {testimonial.profileImage ? (
                       <Image
@@ -338,7 +457,6 @@ export default function CourseTestimonials({
                     )}
                   </figure>
 
-                  {/* Student Details */}
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-gray-900 flex items-center gap-2">
                       {testimonial.studentName}
@@ -361,7 +479,6 @@ export default function CourseTestimonials({
                   </div>
                 </header>
 
-                {/* Rating */}
                 <div className="flex items-center gap-1 mb-3" aria-label={`Rating: ${testimonial.rating} out of 5 stars`}>
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Star
@@ -380,7 +497,6 @@ export default function CourseTestimonials({
                   </span>
                 </div>
 
-                {/* Testimonial Text */}
                 <blockquote className="flex-1 text-gray-700 text-sm leading-relaxed">
                   <p className="line-clamp-3" aria-label={`Testimonial from ${testimonial.studentName}`}>
                     {testimonial.testimonial}
@@ -390,8 +506,8 @@ export default function CourseTestimonials({
             ))}
           </div>
         )}
+        ----------------------------------- */}
       </div>
     </section>
   );
 }
-

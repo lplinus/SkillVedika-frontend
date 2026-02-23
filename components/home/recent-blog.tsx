@@ -152,6 +152,9 @@
 //   );
 // }
 
+
+
+
 import { useMemo } from 'react';
 import Image from 'next/image';
 import parse from 'html-react-parser';
@@ -237,7 +240,8 @@ export default function RecentBlogs({
           </h2>
         )}
 
-        <div className="relative -mx-4 sm:-mx-6 px-4 sm:px-6 group min-h-[450px]">
+        {/* <div className="relative -mx-4 sm:-mx-6 px-4 sm:px-6 group min-h-[450px]"> */}
+        <div className="relative px-4 sm:px-6 group min-h-[450px]">
           <div className="hidden md:block pointer-events-none absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-white to-transparent z-10" />
 
           {/* MODIFICATION HERE: 
@@ -245,7 +249,9 @@ export default function RecentBlogs({
               2. Added [scrollbar-width:none] (Firefox)
               3. Added [-ms-overflow-style:none] (IE/Edge)
           */}
-          <div className="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 [&::-webkit-scrollbar]:hidden [scrollbar-width:none] [-ms-overflow-style:none]">
+          {/* <div className="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 [&::-webkit-scrollbar]:hidden [scrollbar-width:none] [-ms-overflow-style:none]"> */}
+          {/* <div className="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 pr-4 [&::-webkit-scrollbar]:hidden [scrollbar-width:none] [-ms-overflow-style:none]"> */}
+          <div className="flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 pr-4 sm:pr-6 [&::-webkit-scrollbar]:hidden [scrollbar-width:none] [-ms-overflow-style:none]">
             {recentBlogs.map((blog) => {   
               let img = blog.image;
               if (!img.startsWith('/') && !img.startsWith('http')) {

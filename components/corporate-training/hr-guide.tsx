@@ -60,7 +60,10 @@ export default function HrGuide({
                       </div>
 
                       {/* Step Number Badge */}
-                      <div className="absolute -top-2 -right-2 w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-gradient-to-br from-primary to-teal-600 flex items-center justify-center text-primary-foreground text-xs lg:text-sm font-bold shadow-lg">
+                      {/* <div className="absolute -top-2 -right-2 w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-gradient-to-br from-primary to-teal-600 flex items-center justify-center text-primary-foreground text-xs lg:text-sm font-bold shadow-lg">
+                        {guide.step}
+                      </div> */}
+                      <div className="absolute -top-2 -right-2 w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-gradient-to-br from-primary to-teal-600 flex items-center justify-center text-white text-xs lg:text-sm font-bold shadow-lg">
                         {guide.step}
                       </div>
                     </div>
@@ -109,9 +112,12 @@ export default function HrGuide({
                     </div>
 
                     {/* Step Number */}
-                    <div className="absolute -top-1.5 -right-1.5 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-br from-accent to-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
+                    {/* <div className="absolute -top-1.5 -right-1.5 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-br from-accent to-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
                       {guide.step}
-                    </div>
+                    </div> */}
+                    <div className="absolute -top-2 -right-2 w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-gradient-to-br from-primary to-teal-600 flex items-center justify-center text-white text-xs lg:text-sm font-bold shadow-lg">
+                        {guide.step}
+                      </div>
                   </div>
 
                   {/* Vertical Connector */}
