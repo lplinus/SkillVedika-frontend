@@ -80,20 +80,27 @@ function HeroSection({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* LEFT */}
-          <div className="space-y-6 w-full">
+          {/* <div className="space-y-6 w-full"> */}
+          <div className="space-y-6 w-full text-center md:text-left flex flex-col items-center md:items-start">
             {/* Dynamic Heading */}
             <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+              {/* <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight"> */}
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight text-center md:text-left">
                 <span className="text-[#1E4C8F]">{part1 || 'On-Job Support'}</span>
                 {part2 && <span className="text-[#1E4C8F] ml-2">{part2}</span>}
               </h1>
             </div>
 
             {/* Description: TipTap HTML — render inside a div to avoid nesting block elements inside <p> */}
-            <SafeHTML html={descriptionHtml} className="text-lg text-gray-700 leading-relaxed" />
+            {/* <SafeHTML html={descriptionHtml} className="text-lg text-gray-700 leading-relaxed" /> */}
+            <SafeHTML
+              html={descriptionHtml}
+              className="text-base sm:text-lg text-gray-700 leading-relaxed text-center md:text-left max-w-xl"
+            />
 
             {/* Button */}
-            <div className="flex gap-4 pt-2">
+            {/* <div className="flex gap-4 pt-2"> */}
+            <div className="flex justify-center md:justify-start gap-4 pt-2 w-full">
               <Button
                 onClick={() => setShowEnrollModal(true)}
                 className="bg-[#1E4C8F] hover:bg-[#163C72] text-white px-8 py-5 text-base rounded-lg shadow-md"

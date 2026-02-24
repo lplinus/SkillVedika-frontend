@@ -31,20 +31,21 @@ export default function WhoIsThisFor({
       <div className="max-w-7xl mx-auto relative z-10">
         {/* HEADER */}
         <div
-          className={`max-w-3xl mb-24 transition-all duration-1000 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}
+          // className={`max-w-3xl mb-24 transition-all duration-1000 ${
+          className={`max-w-3xl mx-auto text-center lg:text-left mb-12 lg:mb-24 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}
         >
           <div className="inline-block px-4 py-2 bg-primary/10 text-primary text-sm font-semibold rounded-full mb-6 shadow-sm backdrop-blur-sm">
             {targetLabel || 'TARGET AUDIENCE'}
           </div>
 
-          <h2 className="text-4xl lg:text-5xl font-extrabold leading-tight mb-6 bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight mb-4 lg:mb-6 bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">
             {title?.text || 'Who Is This For?'}
           </h2>
 
           <p
-            className="text-xl text-gray-600 leading-relaxed"
+            // className="text-xl text-gray-600 leading-relaxed"
+            className="text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed"
             dangerouslySetInnerHTML={{ __html: subtitle || '' }}
           />
         </div>
@@ -54,12 +55,11 @@ export default function WhoIsThisFor({
           {cards?.map((item, i) => (
             <div
               key={i}
-              className={`group relative transition-all duration-700 ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }`}
+              className={`group relative transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                }`}
               style={{ transitionDelay: `${(i + 2) * 150}ms` }}
             >
-              <div className="relative bg-white/90 backdrop-blur-md border border-gray-200 rounded-2xl p-10 shadow-sm hover:shadow-xl hover:border-blue-400 transition-all duration-500 h-full overflow-hidden">
+              <div className="relative bg-white/90 backdrop-blur-md border border-gray-200 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-sm  hover:shadow-xl hover:border-blue-400 transition-all duration-500 h-full overflow-hidden">
                 {/* Hover gradient overlay */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-200/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
@@ -72,7 +72,7 @@ export default function WhoIsThisFor({
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-3xl font-bold text-gray-900 mb-4 group-hover:text-blue-800 transition-colors duration-300">
+                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 group-hover:text-blue-800 transition-colors duration-300">
                     {item.title}
                   </h3>
 
@@ -80,7 +80,8 @@ export default function WhoIsThisFor({
                   <div className="w-16 h-1 bg-blue-300/40 rounded-full group-hover:w-54 group-hover:bg-blue-900 transition-all duration-500 mb-6"></div>
 
                   {/* Description */}
-                  <p className="text-gray-600 text-lg leading-relaxed">{item.content}</p>
+                  {/* <p className="text-gray-600 text-lg leading-relaxed">{item.content}</p> */}
+                  <p className="text-gray-600 text-base sm:text-lg leading-relaxed">{item.content}</p>
                 </div>
               </div>
             </div>
