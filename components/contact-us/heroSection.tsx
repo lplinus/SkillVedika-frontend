@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import CircleImage from '@/components/CircleImage';
 import { useState, useEffect } from 'react';
 import { EnrollModal } from '../EmptyLoginForm';
+import Image from 'next/image';
 
 export default function HeroSection({
   title,
@@ -72,82 +73,269 @@ export default function HeroSection({
   const secondTitle = hasParts ? (title?.part2 ?? '') : '';
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 to-blue-50 py-20 px-4 sm:px-6 lg:py-32 lg:px-8">
-      {/* Floating Ring */}
-      <div
-        className="absolute bottom-10 left-10 w-22 h-32 border-[8px] border-primary/20 rounded-full animate-float opacity-50"
-        style={{ animationDelay: '1.5s' }}
-      ></div>
 
-      {/* Main Grid */}
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10">
-        {/* ===================== LEFT CONTENT ===================== */}
-        <div className="space-y-8 animate-fade-in-up">
-          <div className="space-y-6">
-            {/* Dynamic Title */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-              <span className="block bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-600">
-                {mainTitle}
-              </span>
 
-              {secondTitle ? (
-                <span className="block mt-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-[#1A3F66] to-teal-500">
-                  {secondTitle}
-                </span>
-              ) : null}
-            </h1>
+    <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 to-blue-50 py-12 px-4 sm:px-6 md:py-20 lg:py-32 lg:px-8">
+  {/* Floating Ring - Hidden on smallest screens to prevent overflow issues */}
+  <div
+    className="absolute bottom-10 left-10 w-24 h-24 md:w-32 md:h-32 border-[8px] border-primary/20 rounded-full animate-float opacity-50 hidden sm:block"
+    style={{ animationDelay: '1.5s' }}
+  />
 
-            {/* Dynamic Description */}
-            <p
-              className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl"
-              dangerouslySetInnerHTML={{ __html: description || '' }}
-            />
-          </div>
+  {/* Main Grid */}
+  <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-center relative z-10">
+    
+    {/* ===================== LEFT CONTENT ===================== */}
+    <div className="space-y-6 md:space-y-8 animate-fade-in-up text-center md:text-left flex flex-col items-center md:items-start order-2 md:order-1">
+      
+      <div className="space-y-4 md:space-y-6">
+        {/* Dynamic Title */}
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
+          <span className="block bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-600">
+            {mainTitle}
+          </span>
 
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-sm">
-            <a
-              href="/"
-              className="text-primary hover:underline font-medium transition-colors"
-            >
-              Home
-            </a>
-            <span className="text-muted-foreground">›</span>
-            <span className="text-foreground font-medium">Contact Us</span>
-          </div>
-
-          {/* CTA Button */}
-          <Button
-            onClick={() => setShowEnrollModal(true)}
-            size="lg"
-            className="bg-blue-900 hover:opacity-90 text-lg text-white font-semibold px-4 py-3 h-auto shadow-medium transition-all hover:shadow-strong hover:scale-105"
-          >
-            {buttonText || "Let's Connect Together"}
-          </Button>
-
-          {showEnrollModal && (
-            <EnrollModal
-              courses={courses}
-              page="Contact Us"
-              onClose={() => setShowEnrollModal(false)}
-            />
+          {secondTitle && (
+            <span className="block mt-1 md:mt-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-[#1A3F66] to-teal-500">
+              {secondTitle}
+            </span>
           )}
-        </div>
+        </h1>
 
-        {/* ===================== RIGHT IMAGE ===================== */}
-        <div className="flex justify-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-          <div className="relative">
-            {/* Glow Behind Image */}
-            <div className="absolute inset-0 bg-gradient-primary rounded-full blur-2xl opacity-20 animate-pulse"></div>
+        {/* Dynamic Description */}
+        <p
+          className="text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto md:mx-0"
+          dangerouslySetInnerHTML={{ __html: description || '' }}
+        />
+      </div>
 
-            <CircleImage
-              src={image || '/contact-us/Frame 295.webp'}
-              alt="Contact illustration"
-              size={384}
+      {/* Breadcrumb */}
+      <nav className="flex items-center justify-center md:justify-start gap-2 text-xs sm:text-sm">
+        <a
+          href="/"
+          className="text-primary hover:underline font-medium transition-colors"
+        >
+          Home
+        </a>
+        <span className="text-muted-foreground">›</span>
+        <span className="text-foreground font-medium">Contact Us</span>
+      </nav>
+
+      {/* CTA Button */}
+      <div className="w-full sm:w-auto">
+        <Button
+          onClick={() => setShowEnrollModal(true)}
+          size="lg"
+          className="w-full sm:w-auto bg-blue-900 hover:opacity-90 text-base sm:text-lg text-white font-semibold px-8 py-4 h-auto shadow-md transition-all hover:shadow-lg hover:scale-105"
+        >
+          {buttonText || "Let's Connect Together"}
+        </Button>
+      </div>
+
+      {showEnrollModal && (
+        <EnrollModal
+          courses={courses}
+          page="Contact Us"
+          onClose={() => setShowEnrollModal(false)}
+        />
+      )}
+    </div>
+
+    {/* ===================== RIGHT IMAGE ===================== */}
+    <div
+      className="flex justify-center animate-fade-in-up order-1 md:order-2"
+      style={{ animationDelay: '0.2s' }}
+    >
+      <div className="relative w-full max-w-[280px] sm:max-w-[350px] md:max-w-none flex justify-center">
+        {/* Glow Behind Image */}
+        <div className="absolute inset-0 bg-blue-400 rounded-full blur-3xl opacity-20 animate-pulse"></div>
+
+        {/* Note: Ensure CircleImage handles responsive widths. 
+            Passing a className or ensuring it uses w-full is better than a fixed pixel size.
+        */}
+        <div className="relative z-10 w-full aspect-square max-w-[384px]">
+            {/* <CircleImage
+                src={image || '/contact-us/Frame 295.webp'}
+                alt="Contact illustration"
+                // size="100%" 
+                size={384}
+            /> */}
+            <Image
+                src={image || '/contact-us/Frame 295.webp'}
+                alt="Contact illustration"
+                width={384}
+                height={384}
+                className="w-full h-full object-cover rounded-full"
             />
-          </div>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
+    // <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 to-blue-50 py-20 px-4 sm:px-6 lg:py-32 lg:px-8">
+    //   {/* Floating Ring */}
+    //   <div
+    //     className="absolute bottom-10 left-10 w-22 h-32 border-[8px] border-primary/20 rounded-full animate-float opacity-50"
+    //     style={{ animationDelay: '1.5s' }}
+    //   ></div>
+
+    //   {/* Main Grid */}
+    //   <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10">
+    //     {/* ===================== LEFT CONTENT ===================== */}
+    //     <div className="space-y-8 animate-fade-in-up">
+    //       <div className="space-y-6">
+    //         {/* Dynamic Title */}
+    //         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+    //           <span className="block bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-600">
+    //             {mainTitle}
+    //           </span>
+
+    //           {secondTitle ? (
+    //             <span className="block mt-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-[#1A3F66] to-teal-500">
+    //               {secondTitle}
+    //             </span>
+    //           ) : null}
+    //         </h1>
+
+    //         {/* Dynamic Description */}
+    //         <p
+    //           className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl"
+    //           dangerouslySetInnerHTML={{ __html: description || '' }}
+    //         />
+    //       </div>
+
+    //       {/* Breadcrumb */}
+    //       <div className="flex items-center gap-2 text-sm">
+    //         <a
+    //           href="/"
+    //           className="text-primary hover:underline font-medium transition-colors"
+    //         >
+    //           Home
+    //         </a>
+    //         <span className="text-muted-foreground">›</span>
+    //         <span className="text-foreground font-medium">Contact Us</span>
+    //       </div>
+
+    //       {/* CTA Button */}
+    //       <Button
+    //         onClick={() => setShowEnrollModal(true)}
+    //         size="lg"
+    //         className="bg-blue-900 hover:opacity-90 text-lg text-white font-semibold px-4 py-3 h-auto shadow-medium transition-all hover:shadow-strong hover:scale-105"
+    //       >
+    //         {buttonText || "Let's Connect Together"}
+    //       </Button>
+
+    //       {showEnrollModal && (
+    //         <EnrollModal
+    //           courses={courses}
+    //           page="Contact Us"
+    //           onClose={() => setShowEnrollModal(false)}
+    //         />
+    //       )}
+    //     </div>
+
+    //     {/* ===================== RIGHT IMAGE ===================== */}
+    //     <div className="flex justify-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+    //       <div className="relative">
+    //         {/* Glow Behind Image */}
+    //         <div className="absolute inset-0 bg-gradient-primary rounded-full blur-2xl opacity-20 animate-pulse"></div>
+
+    //         <CircleImage
+    //           src={image || '/contact-us/Frame 295.webp'}
+    //           alt="Contact illustration"
+    //           size={384}
+    //         />
+    //       </div>
+    //     </div>
+    //   </div>
+    // </section>
+
+// 
+  //   <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 to-blue-50 py-20 px-4 sm:px-6 lg:py-32 lg:px-8">
+  // {/* Floating Ring */}
+  // <div
+  //   className="absolute bottom-10 left-10 w-22 h-32 border-[8px] border-primary/20 rounded-full animate-float opacity-50"
+  //   style={{ animationDelay: '1.5s' }}
+  // ></div>
+
+  // {/* Main Grid */}
+  // <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10">
+    
+  //   {/* ===================== LEFT CONTENT ===================== */}
+  //   <div className="space-y-8 animate-fade-in-up text-center md:text-left flex flex-col items-center md:items-start">
+      
+  //     <div className="space-y-6">
+  //       {/* Dynamic Title */}
+  //       <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+  //         <span className="block bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-600">
+  //           {mainTitle}
+  //         </span>
+
+  //         {secondTitle ? (
+  //           <span className="block mt-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-[#1A3F66] to-teal-500">
+  //             {secondTitle}
+  //           </span>
+  //         ) : null}
+  //       </h1>
+
+        // {/* Dynamic Description */}
+      //   <p
+      //     className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto md:mx-0"
+      //     dangerouslySetInnerHTML={{ __html: description || '' }}
+      //   />
+      // </div>
+
+      // {/* Breadcrumb */}
+    //   <div className="flex items-center justify-center md:justify-start gap-2 text-sm">
+    //     <a
+    //       href="/"
+    //       className="text-primary hover:underline font-medium transition-colors"
+    //     >
+    //       Home
+    //     </a>
+    //     <span className="text-muted-foreground">›</span>
+    //     <span className="text-foreground font-medium">Contact Us</span>
+    //   </div>
+
+    //   {/* CTA Button */}
+    //   <Button
+    //     onClick={() => setShowEnrollModal(true)}
+    //     size="lg"
+    //     className="bg-blue-900 hover:opacity-90 text-lg text-white font-semibold px-6 py-3 h-auto shadow-medium transition-all hover:shadow-strong hover:scale-105"
+    //   >
+    //     {buttonText || "Let's Connect Together"}
+    //   </Button>
+
+    //   {showEnrollModal && (
+    //     <EnrollModal
+    //       courses={courses}
+    //       page="Contact Us"
+    //       onClose={() => setShowEnrollModal(false)}
+    //     />
+    //   )}
+    // </div>
+
+    // {/* ===================== RIGHT IMAGE ===================== */}
+//     <div
+//       className="flex justify-center animate-fade-in-up"
+//       style={{ animationDelay: '0.2s' }}
+//     >
+//       <div className="relative">
+//         {/* Glow Behind Image */}
+//         <div className="absolute inset-0 bg-gradient-primary rounded-full blur-2xl opacity-20 animate-pulse"></div>
+
+//         <CircleImage
+//           src={image || '/contact-us/Frame 295.webp'}
+//           alt="Contact illustration"
+//           size={384}
+//         />
+//       </div>
+//     </div>
+//   </div>
+// </section>
+
+
+
+
   );
 }
