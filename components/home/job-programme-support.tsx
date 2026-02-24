@@ -49,7 +49,8 @@ export default function JobProgrammeSupport({ jobSupport }: JobProgrammeSupportP
   return (
     <section className="relative overflow-hidden">
       {/* Aspect-ratio image wrapper defines height */}
-      <div className="relative w-full aspect-[1200/686]">
+      {/* <div className="relative w-full aspect-[1200/686]"> */}
+      <div className="relative w-full min-h-[420px] sm:min-h-[500px] md:min-h-[600px] lg:min-h-[686px]">
         <Image
           src="/home/handshake.webp"
           alt="Job programme support background"
@@ -81,7 +82,8 @@ export default function JobProgrammeSupport({ jobSupport }: JobProgrammeSupportP
               {paymentTypes.map((type, index) => (
                 <button
                   key={index}
-                  className="bg-white text-[#2C5AA0] px-6 py-2.5 rounded font-semibold min-h-[44px]"
+                  // className="bg-white text-[#2C5AA0] px-6 py-2.5 rounded font-semibold min-h-[44px]"
+                  className="bg-white text-[#2C5AA0] px-6 py-3 rounded font-semibold min-h-[44px] w-full sm:w-auto max-w-xs"
                 >
                   {type}
                 </button>

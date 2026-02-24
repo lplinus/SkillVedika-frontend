@@ -467,7 +467,8 @@ function Hero({ hero }: Readonly<HeroProps>) {
 
           {/* ⭐ RIGHT IMAGE FROM CMS - Visible on all devices */}
           {/* Performance: Priority image for LCP - hero image is above the fold */}
-          <div className="flex justify-center items-center relative order-1 md:order-2 mb-6 sm:mb-8 md:mb-0 w-full">
+          {/* <div className="flex justify-center items-center relative order-1 md:order-2 mb-6 sm:mb-8 md:mb-0 w-full"> */}
+          {/* <div className="hidden md:flex justify-center items-center relative order-2 mb-0 w-full">
             <div className="hero-image-wrapper relative w-full max-w-[450px] aspect-square flex items-center justify-center z-10">
               <Image
                 src={heroImage}
@@ -478,6 +479,19 @@ function Hero({ hero }: Readonly<HeroProps>) {
                 fetchPriority={isMobile ? 'low' : 'high'}
                 quality={isMobile ? 60 : 85}
                 sizes="(max-width: 640px) 280px, (max-width: 768px) 320px, (max-width: 1024px) 380px, 450px"
+                className="object-contain drop-shadow-lg w-auto h-auto max-w-full max-h-full"
+              />
+            </div>
+          </div> */}
+          <div className="hidden md:flex justify-center items-center relative order-2 w-full">
+            <div className="relative w-full max-w-[450px] aspect-square flex items-center justify-center">
+              <Image
+                src={heroImage}
+                alt="SkillVedika - Professional IT Training and Courses"
+                width={450}
+                height={450}
+                quality={85}
+                sizes="(max-width: 1024px) 380px, 450px"
                 className="object-contain drop-shadow-lg w-auto h-auto max-w-full max-h-full"
               />
             </div>

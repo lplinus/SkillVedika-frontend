@@ -1,10 +1,14 @@
 'use client';
 
 import { useState, useEffect, useCallback, memo } from 'react';
-import { Phone, Headphones, MessageCircle } from 'lucide-react';
+// import { Phone, Headphones, MessageCircle } from 'lucide-react';
+import { Phone, MessageCircle } from 'lucide-react';
+
+import { UserRound, Headphones } from "lucide-react";
 import { MessageSquare } from 'lucide-react';
 import { EnrollModal } from './EmptyLoginForm';
 import { subscribeFooterSettings } from '@/lib/getFooterSettings';
+import Image from "next/image";
 
 type Course = { id: number; title: string };
 
@@ -86,11 +90,11 @@ function UnifiedHelpButton() {
 
         const list = Array.isArray(data)
           ? data
-              .map((c: any) => ({
-                id: c.id || c.course_id,
-                title: c.title || c.course_name,
-              }))
-              .filter(Boolean)
+            .map((c: any) => ({
+              id: c.id || c.course_id,
+              title: c.title || c.course_name,
+            }))
+            .filter(Boolean)
           : [];
 
         setCourses(list);
@@ -133,7 +137,7 @@ function UnifiedHelpButton() {
   return (
     <>
       {/* FAB */}
-      <div
+      {/* <div
         className={`sm:hidden fixed right-4 bottom-36 z-50 transition-all
           ${hideButton ? 'opacity-0 pointer-events-none' : 'opacity-100'}
         `}
@@ -142,10 +146,39 @@ function UnifiedHelpButton() {
           onClick={() => setIsOpen(true)}
           className="bg-gradient-to-r from-[#1E5BA8] to-[#2563EB]
             text-white px-5 py-4 rounded-full shadow-xl flex items-center gap-2"
+        > */}
+          {/* <Headphones /> {/*Need Help? */}
+        {/* </button> */}
+      {/* </div> */} 
+
+      
+
+      <div
+        className={`sm:hidden fixed right-4 bottom-36 z-50 transition-all duration-300
+    ${hideButton ? "opacity-0 pointer-events-none" : "opacity-100"}
+  `}
+      >
+        <button
+          onClick={() => setIsOpen(true)}
+          className="bg-gradient-to-r from-[#1E5BA8] to-[#2563EB]
+      text-white px-5 py-4 rounded-full shadow-xl
+      flex items-center gap-2 hover:scale-105 transition-transform"
         >
-          <Headphones /> Need Help?
+          <Image
+            // src="/icons/headphone.webp"  // 👈 important
+            src="/icons/support.webp"  // 👈 important
+
+            alt="Customer Care"
+            width={20}
+            height={20}
+            className="object-contain invert brightness-0"
+          />
+          Need Help?
         </button>
       </div>
+
+
+
 
       {/* Overlay */}
       {isOpen && (

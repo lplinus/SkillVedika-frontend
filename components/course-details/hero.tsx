@@ -7,6 +7,8 @@ import LazyPhoneInput from '@/lib/lazyPhoneInput';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { User } from "lucide-react";
+// import Image from "next/image";
 
 
 // 🔥 FIX country names / dial codes to BLACK and font loading
@@ -229,95 +231,95 @@ export default function Hero({
   // }
 
   async function handleSubmit(e: any) {
-  e.preventDefault();
-  if (isSubmitting) return;
+    e.preventDefault();
+    if (isSubmitting) return;
 
-  // ---------------- EMAIL VALIDATION ----------------
-  if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-    toast.error('Please enter a valid email address.');
-    return;
-  }
-
-  // ---------------- PHONE VALIDATION ----------------
-  const digitsOnly = formData.fullPhone.replace(/\D/g, '');
-  const cc = formData.countryCode.replace('+', '');
-  const local = digitsOnly.replace(cc, '');
-
-  if (local.length < 7 || local.length > 12) {
-    toast.error('Enter a valid phone number (7–12 digits).');
-    return;
-  }
-
-  if (formData.countryCode === '+91' && !/^[6-9][0-9]{9}$/.test(local)) {
-    toast.error('Enter a valid 10-digit Indian number starting with 6–9.');
-    return;
-  }
-
-  setIsSubmitting(true);
-
-  try {
-    // ---------------- RECAPTCHA V3 ----------------
-    let captchaV3Token: string | null = null;
-
-    try {
-      const { load } = await import('recaptcha-v3');
-      const recaptcha = await load(
-        process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY!
-      );
-
-      captchaV3Token = await recaptcha.execute('hero_enroll_submit');
-    } catch (err) {
-      console.warn('reCAPTCHA blocked or failed', err);
-    }
-
-    // ---------------- BUILD PAYLOAD ----------------
-    const payload: any = {
-      name: formData.name,
-      email: formData.email,
-      phone: formData.fullPhone,
-      courses: formData.selectedCourses,
-      page: course.title,
-    };
-
-    if (captchaV3Token) {
-      payload.captcha_v3 = captchaV3Token;
-    }
-
-    // ---------------- API CALL ----------------
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
-
-    const res = await fetch(`${apiUrl}/enroll`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload), // ✅ USE payload here
-    });
-
-    const json = await res.json();
-
-    if (!res.ok) {
-      toast.error(json?.message || 'Submission failed.');
+    // ---------------- EMAIL VALIDATION ----------------
+    if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      toast.error('Please enter a valid email address.');
       return;
     }
 
-    toast.success(json?.message || 'Your details have been submitted!');
+    // ---------------- PHONE VALIDATION ----------------
+    const digitsOnly = formData.fullPhone.replace(/\D/g, '');
+    const cc = formData.countryCode.replace('+', '');
+    const local = digitsOnly.replace(cc, '');
 
-    // Reset form
-    setFormData({
-      name: '',
-      selectedCourses: [course?.id],
-      email: '',
-      fullPhone: '',
-      countryCode: '+91',
-      terms: false,
-    });
+    if (local.length < 7 || local.length > 12) {
+      toast.error('Enter a valid phone number (7–12 digits).');
+      return;
+    }
 
-  } catch (error) {
-    console.error(error);
-    toast.error('Something went wrong.');
-  } finally {
-    setIsSubmitting(false);
+    if (formData.countryCode === '+91' && !/^[6-9][0-9]{9}$/.test(local)) {
+      toast.error('Enter a valid 10-digit Indian number starting with 6–9.');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // ---------------- RECAPTCHA V3 ----------------
+      let captchaV3Token: string | null = null;
+
+      try {
+        const { load } = await import('recaptcha-v3');
+        const recaptcha = await load(
+          process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY!
+        );
+
+        captchaV3Token = await recaptcha.execute('hero_enroll_submit');
+      } catch (err) {
+        console.warn('reCAPTCHA blocked or failed', err);
+      }
+
+      // ---------------- BUILD PAYLOAD ----------------
+      const payload: any = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.fullPhone,
+        courses: formData.selectedCourses,
+        page: course.title,
+      };
+
+      if (captchaV3Token) {
+        payload.captcha_v3 = captchaV3Token;
+      }
+
+      // ---------------- API CALL ----------------
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+
+      const res = await fetch(`${apiUrl}/enroll`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload), // ✅ USE payload here
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        toast.error(json?.message || 'Submission failed.');
+        return;
+      }
+
+      toast.success(json?.message || 'Your details have been submitted!');
+
+      // Reset form
+      setFormData({
+        name: '',
+        selectedCourses: [course?.id],
+        email: '',
+        fullPhone: '',
+        countryCode: '+91',
+        terms: false,
+      });
+
+    } catch (error) {
+      console.error(error);
+      toast.error('Something went wrong.');
+    } finally {
+      setIsSubmitting(false);
+    }
   }
-}
 
 
   // ----------------------------------------------------------
@@ -373,17 +375,55 @@ export default function Hero({
               </p>
             )}
 
-            <div className="grid grid-cols-2 gap-4 mb-8">
+            {/* <div className="grid grid-cols-2 gap-4 mb-8">
               {displayTrainers.map((t: any, idx: number) => (
-                <div key={idx} className="flex items-center gap-3 bg-white/10 rounded-lg p-3">
-                  <div className="w-10 h-10 bg-white/30 rounded-full"></div>
-                  <div>
+                <div key={idx} className="flex items-center gap-3 bg-white/10 rounded-lg p-3"> */}
+            {/* <div className="w-10 h-10 bg-white/30 rounded-full"></div> */}
+            {/* <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                    <User className="w-5 h-5 text-white" />
+                  </div> */}
+            {/* if has the default images */}
+            {/* <div className="w-10 h-10 rounded-full overflow-hidden bg-white/20">
+                    <Image
+                      src="/defaults/trainer-avatar.png"
+                      alt="Trainer"
+                      width={40}
+                      height={40}
+                      className="w-full h-full object-cover"
+                    />
+                  </div> */}
+            {/* <div>
                     <div className="font-semibold text-sm">{t.name}</div>
                     <div className="text-xs text-blue-200">{t.role}</div>
+                  </div>
+                </div> */}
+            {/* ))}
+            </div> */}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 mb-8">
+              {displayTrainers.map((t: any, idx: number) => (
+                <div
+                  key={idx}
+                  className="flex items-center gap-4 bg-white/10 rounded-xl p-4 sm:p-3 transition hover:bg-white/15"
+                >
+                  {/* Avatar */}
+                  <div className="w-12 h-12 sm:w-10 sm:h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                    <User className="w-6 h-6 sm:w-5 sm:h-5 text-white" />
+                  </div>
+
+                  {/* Text */}
+                  <div className="min-w-0">
+                    <div className="font-semibold text-sm sm:text-sm leading-snug">
+                      {t.name}
+                    </div>
+                    <div className="text-xs sm:text-xs text-blue-200">
+                      {t.role}
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
+            
           </div>
 
           {/* RIGHT FORM */}
@@ -566,20 +606,20 @@ export default function Hero({
               >
                 {formDetails?.submit_button_text || 'Submit your details'}
               </button> */}
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full h-14 bg-gradient-to-r from-blue-500 to-teal-500 text-white font-semibold flex items-center justify-center gap-2"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Submitting...</span>
-                    </>
-                  ) : (
-                    <span>{formDetails?.submit_button_text || 'Submit Your Details'}</span>
-                  )}
-                </Button> 
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full h-14 bg-gradient-to-r from-blue-500 to-teal-500 text-white font-semibold flex items-center justify-center gap-2"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>Submitting...</span>
+                  </>
+                ) : (
+                  <span>{formDetails?.submit_button_text || 'Submit Your Details'}</span>
+                )}
+              </Button>
             </form>
           </div>
         </div>
