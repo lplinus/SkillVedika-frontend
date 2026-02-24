@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import CircleImage from '@/components/CircleImage';
+// import CircleImage from '@/components/CircleImage';
 import { useState, useEffect } from 'react';
 import { EnrollModal } from '../EmptyLoginForm';
 import Image from 'next/image';
