@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, memo } from 'react';
 // import { Phone, Headphones, MessageCircle } from 'lucide-react';
 import { Phone, MessageCircle } from 'lucide-react';
 
-import { UserRound, Headphones } from "lucide-react";
+// import { UserRound, Headphones } from "lucide-react";
 import { MessageSquare } from 'lucide-react';
 import { EnrollModal } from './EmptyLoginForm';
 import { subscribeFooterSettings } from '@/lib/getFooterSettings';

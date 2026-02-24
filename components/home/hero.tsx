@@ -53,8 +53,8 @@ function Hero({ hero }: Readonly<HeroProps>) {
     blogs: [],
   });
 
-  const isMobile =
-    typeof window !== 'undefined' && window.innerWidth < 768;
+  // const isMobile =
+  //   typeof window !== 'undefined' && window.innerWidth < 768;
 
   const [showDropdown, setShowDropdown] = useState(false);
 

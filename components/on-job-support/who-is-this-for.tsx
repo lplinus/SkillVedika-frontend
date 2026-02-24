@@ -24,70 +24,147 @@ export default function WhoIsThisFor({
   }, []);
 
   return (
-    <section className="relative py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-white overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute bottom-16 right-10 w-80 h-80 bg-purple-300/20 blur-[120px] rounded-full"></div>
+    // <section className="relative py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-white overflow-hidden">
+    //   {/* Background glow */}
+    //   <div className="absolute bottom-16 right-10 w-80 h-80 bg-purple-300/20 blur-[120px] rounded-full"></div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* HEADER */}
-        <div
-          // className={`max-w-3xl mb-24 transition-all duration-1000 ${
-          className={`max-w-3xl mx-auto text-center lg:text-left mb-12 lg:mb-24 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}
-        >
-          <div className="inline-block px-4 py-2 bg-primary/10 text-primary text-sm font-semibold rounded-full mb-6 shadow-sm backdrop-blur-sm">
-            {targetLabel || 'TARGET AUDIENCE'}
-          </div>
+    //   <div className="max-w-7xl mx-auto relative z-10">
+    //     {/* HEADER */}
+    //     <div
+    //       // className={`max-w-3xl mb-24 transition-all duration-1000 ${
+    //       className={`max-w-3xl mx-auto text-center lg:text-left mb-12 lg:mb-24 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+    //         }`}
+    //     >
+    //       <div className="inline-block px-4 py-2 bg-primary/10 text-primary text-sm font-semibold rounded-full mb-6 shadow-sm backdrop-blur-sm">
+    //         {targetLabel || 'TARGET AUDIENCE'}
+    //       </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight mb-4 lg:mb-6 bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">
-            {title?.text || 'Who Is This For?'}
-          </h2>
+    //       <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight mb-4 lg:mb-6 bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">
+    //         {title?.text || 'Who Is This For?'}
+    //       </h2>
 
-          <p
-            // className="text-xl text-gray-600 leading-relaxed"
-            className="text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: subtitle || '' }}
-          />
-        </div>
+    //       <p
+    //         className="text-xl text-gray-600 leading-relaxed"
+    //         // className="text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed"
+    //         dangerouslySetInnerHTML={{ __html: subtitle || '' }}
+    //       />
+    //     </div>
 
-        {/* GRID OF CARDS */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-          {cards?.map((item, i) => (
-            <div
-              key={i}
-              className={`group relative transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-                }`}
-              style={{ transitionDelay: `${(i + 2) * 150}ms` }}
-            >
-              <div className="relative bg-white/90 backdrop-blur-md border border-gray-200 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-sm  hover:shadow-xl hover:border-blue-400 transition-all duration-500 h-full overflow-hidden">
-                {/* Hover gradient overlay */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-200/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+    //     {/* GRID OF CARDS */}
+    //     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+    //       {cards?.map((item, i) => (
+    //         <div
+    //           key={i}
+    //           className={`group relative transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+    //             }`}
+    //           style={{ transitionDelay: `${(i + 2) * 150}ms` }}
+    //         >
+    //           <div className="relative bg-white/90 backdrop-blur-md border border-gray-200 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-sm  hover:shadow-xl hover:border-blue-400 transition-all duration-500 h-full overflow-hidden">
+    //             {/* Hover gradient overlay */}
+    //             <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-200/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
-                <div className="relative z-10">
-                  {/* Subtitle */}
-                  <div className="inline-block mb-3">
-                    <span className="text-sm font-semibold uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-                      {item.target}
-                    </span>
-                  </div>
+    //             <div className="relative z-10">
+    //               {/* Subtitle */}
+    //               <div className="inline-block mb-3">
+    //                 <span className="text-sm font-semibold uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+    //                   {item.target}
+    //                 </span>
+    //               </div>
 
-                  {/* Title */}
-                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 group-hover:text-blue-800 transition-colors duration-300">
-                    {item.title}
-                  </h3>
+    //               {/* Title */}
+    //               <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 group-hover:text-blue-800 transition-colors duration-300">
+    //                 {item.title}
+    //               </h3>
 
-                  {/* Divider */}
-                  <div className="w-16 h-1 bg-blue-300/40 rounded-full group-hover:w-54 group-hover:bg-blue-900 transition-all duration-500 mb-6"></div>
+    //               {/* Divider */}
+    //               <div className="w-16 h-1 bg-blue-300/40 rounded-full group-hover:w-54 group-hover:bg-blue-900 transition-all duration-500 mb-6"></div>
 
-                  {/* Description */}
-                  {/* <p className="text-gray-600 text-lg leading-relaxed">{item.content}</p> */}
-                  <p className="text-gray-600 text-base sm:text-lg leading-relaxed">{item.content}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+    //               {/* Description */}
+    //               {/* <p className="text-gray-600 text-lg leading-relaxed">{item.content}</p> */}
+    //               <p className="text-gray-600 text-base sm:text-lg leading-relaxed">{item.content}</p>
+    //             </div>
+    //           </div>
+    //         </div>
+    //       ))}
+    //     </div>
+    //   </div>
+    // </section>
+
+
+
+    <section className="relative py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-white overflow-hidden">
+  {/* Background glow */}
+  <div className="absolute bottom-16 right-10 w-80 h-80 bg-purple-300/20 blur-[120px] rounded-full"></div>
+
+  <div className="max-w-7xl mx-auto relative z-10">
+    {/* HEADER */}
+    <div
+      className={`max-w-3xl mx-auto text-center mb-12 lg:mb-20 transition-all duration-1000 ${
+        isVisible
+          ? 'opacity-100 translate-y-0'
+          : 'opacity-0 translate-y-6'
+      }`}
+    >
+      {/* Label */}
+      <div className="inline-block px-4 py-2 bg-primary/10 text-primary text-xs sm:text-sm font-semibold rounded-full mb-5 shadow-sm backdrop-blur-sm">
+        {targetLabel || 'TARGET AUDIENCE'}
       </div>
-    </section>
+
+      {/* Heading */}
+      <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.15] mb-4 lg:mb-6 bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">
+        {title?.text || 'Who Is This For?'}
+      </h2>
+
+      {/* Subtitle */}
+      <p
+        className="text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto"
+        dangerouslySetInnerHTML={{ __html: subtitle || '' }}
+      />
+    </div>
+
+    {/* GRID OF CARDS */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
+      {cards?.map((item, i) => (
+        <div
+          key={i}
+          className={`group relative transition-all duration-700 ${
+            isVisible
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-6'
+          }`}
+          style={{ transitionDelay: `${(i + 1) * 120}ms` }}
+        >
+          <div className="relative bg-white/90 backdrop-blur-md border border-gray-200 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-sm hover:shadow-xl hover:border-blue-400 transition-all duration-500 h-full overflow-hidden">
+            
+            {/* Hover gradient overlay */}
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-200/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+            <div className="relative z-10">
+              {/* Target Tag */}
+              <div className="inline-block mb-3">
+                <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                  {item.target}
+                </span>
+              </div>
+
+              {/* Title */}
+              <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4 group-hover:text-blue-800 transition-colors duration-300">
+                {item.title}
+              </h3>
+
+              {/* Divider */}
+              <div className="w-14 sm:w-16 h-1 bg-blue-300/40 rounded-full group-hover:w-24 group-hover:bg-blue-900 transition-all duration-500 mb-5"></div>
+
+              {/* Description */}
+              <p className="text-gray-600 text-sm sm:text-base lg:text-lg leading-relaxed">
+                {item.content}
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
   );
 }
