@@ -93,7 +93,8 @@ export async function generateMetadata(): Promise<Metadata> {
   } catch (err) {
     console.error('Error generating privacy metadata:', err);
     const { getCanonicalUrl } = await import('@/lib/seo');
-    const canonicalUrl = getCanonicalUrl('/privacy');
+    // const canonicalUrl = getCanonicalUrl('/privacy');
+    const canonicalUrl = getCanonicalUrl('/privacy-policy');
 
     return {
       title: fallbackTitle,
@@ -127,10 +128,10 @@ async function getPrivacyPolicy() {
       return null;
     }
 
-    console.log(`Fetching from: ${apiUrl}/terms-and-conditions?type=privacy`);
+    // console.log(`Fetching from: ${apiUrl}/terms-and-conditions?type=privacy`);
     const res = await fetch(`${apiUrl}/terms-and-conditions?type=privacy`, { cache: 'no-store' });
 
-    console.log(`Response status: ${res.status}`);
+    // console.log(`Response status: ${res.status}`);
 
     if (!res.ok) {
       const errorText = await res.text();
@@ -139,7 +140,7 @@ async function getPrivacyPolicy() {
     }
 
     const response = await res.json();
-    console.log('Privacy policy data fetched successfully:', response);
+    // console.log('Privacy policy data fetched successfully:', response);
 
     // Extract data from response - backend returns {success: true, data: {...}}
     const privacyData = response?.data ?? response;
@@ -162,7 +163,9 @@ export default async function PrivacyPage() {
   const { getCanonicalUrl } = await import('@/lib/seo');
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://skillvedika.com';
-  const canonicalUrl = getCanonicalUrl('/privacy');
+  // const canonicalUrl = getCanonicalUrl('/privacy');
+  const canonicalUrl = getCanonicalUrl('/privacy-policy');
+  
   const [organizationSchema, websiteSchema] = await getBaseSchemas();
 
   const webPageSchema = generateWebPageSchema(canonicalUrl, {
@@ -201,7 +204,8 @@ export default async function PrivacyPage() {
   return (
     <section className="max-w-4xl mx-auto py-10 px-5 text-gray-800">
       {/* Structured Data for SEO */}
-      <StructuredData data={[organizationSchema, websiteSchema, webPageSchema]} />
+      {/* <StructuredData data={[organizationSchema, websiteSchema, webPageSchema]} /> */}
+      <StructuredData data={[organizationSchema, websiteSchema, webPageSchema, breadcrumbSchema]} />
       {/* Title */}
       <h1 className="text-4xl font-bold text-blue-800 mb-6">
         {privacy?.title || 'Privacy Policy'}

@@ -9,7 +9,9 @@ import Header from '@/components/header';
 import { GoogleAnalyticsHead } from '@/components/google-analytics';
 import { getCanonicalUrl } from '@/lib/seo';
 import RootClientWrapper from '@/components/RootClientWrapper';
-import { StructuredData } from '@/components/StructuredData';
+// import { StructuredData } from '@/components/StructuredData';
+import { StructuredData } from '@/lib/structuredData';
+
 import { getGlobalSchema } from '@/lib/schema/globalSchema';
 import ClientSideEffects from './ClientSideEffects';
   // import { Toaster } from 'sonner';//newly added
@@ -49,6 +51,17 @@ export const metadata: Metadata = {
     ],
     apple: '/apple-touch-icon.png',
   },
+  openGraph: {
+  images: [
+    {
+      url: '/og-image.jpg',
+      width: 1200,
+      height: 630,
+      alt: 'SkillVedika',
+    },
+  ],
+  siteName: 'SkillVedika',
+},
 };
 
 /* ---------------- HERO CRITICAL CSS ---------------- */

@@ -276,9 +276,55 @@ async function getHomeSeo() {
 /* ================================
    SEO METADATA
 ================================ */
+// export async function generateMetadata(): Promise<Metadata> {
+//   const FALLBACK_DESCRIPTION =
+//     'SkillVedika offers industry-ready online courses, corporate training, and job support programs designed to help professionals grow their careers in IT and technology.';
+
+//   try {
+//     const seo = await getHomeSeo();
+
+//     if (seo) {
+//       return {
+//         title:
+//           seo.meta_title ||
+//           'SkillVedika – Online Courses & Professional Training',
+//         description:
+//           seo.meta_description?.trim() || FALLBACK_DESCRIPTION,
+//         keywords: seo.meta_keywords,
+//         openGraph: {
+//           title:
+//             seo.meta_title ||
+//             'SkillVedika – Online Courses & Professional Training',
+//           description:
+//             seo.meta_description?.trim() || FALLBACK_DESCRIPTION,
+//           url: 'https://skillvedika.com/',
+//           type: 'website',
+//         },
+//         twitter: {
+//           card: 'summary_large_image',
+//           title:
+//             seo.meta_title ||
+//             'SkillVedika – Online Courses & Professional Training',
+//           description:
+//             seo.meta_description?.trim() || FALLBACK_DESCRIPTION,
+//         },
+//       };
+//     }
+//   } catch {
+//     // silent fallback
+//   }
+
+//   return {
+//     title: 'SkillVedika – Online Courses & Professional Training',
+//     description: FALLBACK_DESCRIPTION,
+//   };
+// }
+
 export async function generateMetadata(): Promise<Metadata> {
   const FALLBACK_DESCRIPTION =
     'SkillVedika offers industry-ready online courses, corporate training, and job support programs designed to help professionals grow their careers in IT and technology.';
+
+  const canonicalUrl = 'https://skillvedika.com';
 
   try {
     const seo = await getHomeSeo();
@@ -291,13 +337,16 @@ export async function generateMetadata(): Promise<Metadata> {
         description:
           seo.meta_description?.trim() || FALLBACK_DESCRIPTION,
         keywords: seo.meta_keywords,
+        alternates: {
+          canonical: canonicalUrl,
+        },
         openGraph: {
           title:
             seo.meta_title ||
             'SkillVedika – Online Courses & Professional Training',
           description:
             seo.meta_description?.trim() || FALLBACK_DESCRIPTION,
-          url: 'https://skillvedika.com/',
+          url: canonicalUrl,
           type: 'website',
         },
         twitter: {
@@ -317,6 +366,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: 'SkillVedika – Online Courses & Professional Training',
     description: FALLBACK_DESCRIPTION,
+    alternates: {
+      canonical: canonicalUrl,
+    },
   };
 }
 

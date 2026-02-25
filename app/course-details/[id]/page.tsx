@@ -23,30 +23,131 @@ const Placement = dynamicImport(() => import('@/components/course-details/placem
 const Reserve = dynamicImport(() => import('@/components/course-details/reserve'));
 
 // Generate metadata for SEO
+// export async function generateMetadata(props: any): Promise<Metadata> {
+//   const propsResolved = await props;
+//   const paramsResolved = await propsResolved.params;
+//   const identifier = Array.isArray(paramsResolved?.id) ? paramsResolved.id[0] : paramsResolved?.id;
+
+//   if (!identifier) {
+//     return {
+//       title: 'Course Details | SkillVedika',
+//       description:
+//         "Learn industry-ready skills with SkillVedika's comprehensive training programs.",
+//     };
+    
+    
+//   }
+
+//   // Use getApiUrl helper for consistent URL construction
+//   const { getApiUrl } = await import('@/lib/apiConfig');
+
+//   try {
+//     // Try course-details endpoint first (supports both slug and ID)
+//     let res = await fetch(getApiUrl(`/course-details/${identifier}`), {
+//       cache: 'no-store',
+//       headers: { Accept: 'application/json' },
+//     });
+
+//     // Fallback to courses endpoint for backward compatibility
+//     if (!res.ok && !Number.isNaN(Number(identifier))) {
+//       res = await fetch(getApiUrl(`/courses/${identifier}`), {
+//         cache: 'no-store',
+//         headers: { Accept: 'application/json' },
+//       });
+//     }
+
+//     if (res.ok) {
+//       const json = await res.json();
+//       const courseData = json.course || json.data || json;
+//       const details = courseData?.details || {};
+
+//       const title = details.meta_title || courseData.title || 'Course Details';
+//       const description =
+//         details.meta_description ||
+//         courseData.description ||
+//         `Learn ${courseData.title} with SkillVedika. Industry-ready training designed to boost your career.`;
+
+//       const canonicalUrl = getCanonicalUrl(`/course-details/${identifier}`);
+
+//       return {
+//         title: `${title} | SkillVedika`,
+//         description,
+//         keywords: details.meta_keywords,
+//         alternates: {
+//           canonical: canonicalUrl,
+//         },
+//         openGraph: {
+//           title,
+//           description,
+//           type: 'website',
+//           url: canonicalUrl,
+//         },
+//       };
+//     }
+//   } catch {
+//     // Fallback metadata - intentional silent failure for graceful degradation
+//   }
+
+//   return {
+//     title: 'Course Details | SkillVedika',
+//     description: "Learn industry-ready skills with SkillVedika's comprehensive training programs.",
+//   };
+// }
+
+
+//generate the meta data
 export async function generateMetadata(props: any): Promise<Metadata> {
   const propsResolved = await props;
   const paramsResolved = await propsResolved.params;
-  const identifier = Array.isArray(paramsResolved?.id) ? paramsResolved.id[0] : paramsResolved?.id;
+  const identifier = Array.isArray(paramsResolved?.id)
+    ? paramsResolved.id[0]
+    : paramsResolved?.id;
 
-  if (!identifier) {
-    return {
-      title: 'Course Details | SkillVedika',
+  const fallbackCanonical = getCanonicalUrl('/courses');
+
+  const fallbackMetadata: Metadata = {
+    title: 'Course Details | SkillVedika',
+    description:
+      "Learn industry-ready skills with SkillVedika's comprehensive training programs.",
+    alternates: {
+      canonical: fallbackCanonical,
+    },
+    openGraph: {
+      title: 'Course Details',
       description:
         "Learn industry-ready skills with SkillVedika's comprehensive training programs.",
-    };
+      url: fallbackCanonical,
+      type: 'website',
+      images: [
+        {
+          url: '/og-image.jpg',
+          width: 1200,
+          height: 630,
+          alt: 'SkillVedika',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Course Details',
+      description:
+        "Learn industry-ready skills with SkillVedika's comprehensive training programs.",
+      images: ['/og-image.jpg'],
+    },
+  };
+
+  if (!identifier) {
+    return fallbackMetadata;
   }
 
-  // Use getApiUrl helper for consistent URL construction
   const { getApiUrl } = await import('@/lib/apiConfig');
 
   try {
-    // Try course-details endpoint first (supports both slug and ID)
     let res = await fetch(getApiUrl(`/course-details/${identifier}`), {
       cache: 'no-store',
       headers: { Accept: 'application/json' },
     });
 
-    // Fallback to courses endpoint for backward compatibility
     if (!res.ok && !Number.isNaN(Number(identifier))) {
       res = await fetch(getApiUrl(`/courses/${identifier}`), {
         cache: 'no-store',
@@ -54,42 +155,60 @@ export async function generateMetadata(props: any): Promise<Metadata> {
       });
     }
 
-    if (res.ok) {
-      const json = await res.json();
-      const courseData = json.course || json.data || json;
-      const details = courseData?.details || {};
-
-      const title = details.meta_title || courseData.title || 'Course Details';
-      const description =
-        details.meta_description ||
-        courseData.description ||
-        `Learn ${courseData.title} with SkillVedika. Industry-ready training designed to boost your career.`;
-
-      const canonicalUrl = getCanonicalUrl(`/course-details/${identifier}`);
-
-      return {
-        title: `${title} | SkillVedika`,
-        description,
-        keywords: details.meta_keywords,
-        alternates: {
-          canonical: canonicalUrl,
-        },
-        openGraph: {
-          title,
-          description,
-          type: 'website',
-          url: canonicalUrl,
-        },
-      };
+    if (!res.ok) {
+      return fallbackMetadata;
     }
-  } catch {
-    // Fallback metadata - intentional silent failure for graceful degradation
-  }
 
-  return {
-    title: 'Course Details | SkillVedika',
-    description: "Learn industry-ready skills with SkillVedika's comprehensive training programs.",
-  };
+    const json = await res.json();
+    const courseData = json.course || json.data || json;
+    const details = courseData?.details || {};
+
+    const metaTitle =
+      details.meta_title || courseData.title || 'Course Details';
+
+    const metaDescription =
+      details.meta_description ||
+      courseData.description ||
+      `Learn ${courseData.title} with SkillVedika. Industry-ready training designed to boost your career.`;
+
+    const canonicalUrl = getCanonicalUrl(`/course-details/${identifier}`);
+
+    const ogImageUrl =
+      courseData.image ||
+      courseData.banner_image ||
+      '/og-image.jpg';
+
+    return {
+      title: `${metaTitle} | SkillVedika`,
+      description: metaDescription,
+      keywords: details.meta_keywords,
+      alternates: {
+        canonical: canonicalUrl,
+      },
+      openGraph: {
+        title: metaTitle,
+        description: metaDescription,
+        type: 'website',
+        url: canonicalUrl,
+        images: [
+          {
+            url: ogImageUrl,
+            width: 1200,
+            height: 630,
+            alt: metaTitle,
+          },
+        ],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: metaTitle,
+        description: metaDescription,
+        images: [ogImageUrl],
+      },
+    };
+  } catch {
+    return fallbackMetadata;
+  }
 }
 
 export default async function CourseDetailsPage(props: any) {

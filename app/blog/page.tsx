@@ -9,7 +9,7 @@ import {
 
 export interface BlogSectionProps {
   sidebarName?: string;
-}
+} 
 
 // Lazy load components for better performance
 // const Hero = dynamicImport(() => import('@/components/blog/hero'));
