@@ -6,6 +6,7 @@
 export interface OrganizationSchema {
   '@context': 'https://schema.org';
   '@type': 'Organization';
+  '@id'?: string;
   name: string;
   url: string;
   logo?: string;
@@ -40,6 +41,7 @@ export interface OrganizationSchema {
 export interface WebSiteSchema {
   '@context': 'https://schema.org';
   '@type': 'WebSite';
+  '@id'?: string;
   name: string;
   url: string;
   potentialAction?: {
@@ -155,11 +157,13 @@ export interface WebPageSchema {
   inLanguage?: string;
   isPartOf?: {
     '@type': 'WebSite';
+    '@id'?: string;
     name: string;
     url: string;
   };
   about?: {
     '@type': 'Organization';
+    '@id'?: string;
     name: string;
     url: string;
   };
@@ -201,6 +205,7 @@ export interface BlogPostingSchema {
   };
   publisher?: {
     '@type': 'Organization';
+    '@id'?: string;
     name: string;
     logo?: {
       '@type': 'ImageObject';
@@ -267,6 +272,7 @@ export function generateOrganizationSchema(
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
+    '@id': `${url}/#organization`,
     name,
     url,
     ...(options?.legalName && { legalName: options.legalName }),
@@ -299,6 +305,7 @@ export function generateWebSiteSchema(
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
+    '@id': `${url}/#website`,
     name,
     url,
     ...(searchUrl && {
@@ -575,6 +582,7 @@ export function generateWebPageSchema(
       options?.siteUrl && {
         isPartOf: {
           '@type': 'WebSite',
+          '@id': `${options.siteUrl}/#website`,
           name: options.siteName,
           url: options.siteUrl,
         },
@@ -583,6 +591,7 @@ export function generateWebPageSchema(
       options?.organizationUrl && {
         about: {
           '@type': 'Organization',
+          '@id': `${options.organizationUrl}/#organization`,
           name: options.organizationName,
           url: options.organizationUrl,
         },
@@ -651,6 +660,7 @@ export function generateBlogPostingSchema(options: {
   authorUrl?: string;
   publisherName?: string;
   publisherLogo?: string;
+  publisherUrl?: string;
 }): BlogPostingSchema {
   return {
     '@context': 'https://schema.org',
@@ -670,6 +680,7 @@ export function generateBlogPostingSchema(options: {
     ...(options.publisherName && {
       publisher: {
         '@type': 'Organization',
+        ...(options.publisherUrl && { '@id': `${options.publisherUrl}/#organization` }),
         name: options.publisherName,
         ...(options.publisherLogo && {
           logo: {
